@@ -3771,14 +3771,12 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
             {
                 ImGui::BeginTooltip();
                 ImGui::Text("Point cloud alignment (registration) algorithm");
-                ImGui::Text(
-                    "Probabilistic alternative to ICP that models one cloud (the target)\nas a set of Gaussian distributions "
-                    "rather than raw points");
+                ImGui::Text("Probabilistic alternative to ICP that models one cloud (the target)\nas a set of Gaussian distributions "
+                            "rather than raw points");
                 ImGui::Text(
                     "Robust for rough initial poses but can converge to a local optimum\nif the initial misalignment is very large");
-                ImGui::Text(
-                    "Known for being faster and smoother in optimization because\nit replaces discrete point-point correspondences "
-                    "with continuous probability density functions.");
+                ImGui::Text("Known for being faster and smoother in optimization because\nit replaces discrete point-point correspondences "
+                            "with continuous probability density functions.");
                 ImGui::EndTooltip();
             }
 

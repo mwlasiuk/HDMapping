@@ -2183,6 +2183,124 @@ void settings_gui()
             }
         }
 
+        static bool open_import_popup = false;
+        static bool show_instruction = false;
+
+        ImGui::Dummy(ImVec2(0, 10));
+
+        if (ImGui::Button("Import Benchmark Output Folders"))
+        {
+            open_import_popup = true;
+            ImGui::OpenPopup("Import Benchmark");
+        }
+
+        if (ImGui::BeginPopupModal("Import Benchmark", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Import benchmark sessions");
+            ImGui::Separator();
+            ImGui::SetNextWindowSize(ImVec2(740, 340), ImGuiCond_Once);
+            if (ImGui::Button("Instruction"))
+            {
+                show_instruction = !show_instruction;
+            }
+
+            ImGui::Dummy(ImVec2(0, 10));
+            if (ImGui::Button("Select Folder"))
+            {
+                const std::string algorithms[] = { "ct-icp",    "glim",      "super-lio", "dlio",
+                                                   "i2ekf-lo",  "superOdom", "lego-loam", "faster-lio",
+                                                   "kiss-icp",  "fast-lio",  "lio-ekf",   "genz-icp",
+                                                   "point-lio", "ig-lio",    "dlo",       "lidar_odometry_ros_wrapper" };
+
+                std::vector<fs::path> missing;
+                std::unordered_map<std::string, std::string> algo_map;
+
+                for (const auto& algo : algorithms)
+                {
+                    if (algo == "kiss-icp")
+                    {
+                        algo_map[algo] = "output_hdmapping-kiss";
+                    }
+                    else if (algo == "genz-icp")
+                    {
+                        algo_map[algo] = "output_hdmapping-genz";
+                    }
+                    else if (algo == "lidar_odometry_ros_wrapper")
+                    {
+                        algo_map[algo] = "output_hdmapping-lidar-odometry-ros";
+                    }
+                    else
+                    {
+                        algo_map[algo] = "output_hdmapping-" + algo;
+                    }
+                }
+
+                fs::path path = fs::path(mandeye::fd::SelectFolder("Add sessions"));
+
+                for (const auto& algo : algorithms)
+                {
+                    fs::path output_folder = path / algo / algo_map[algo];
+                    fs::path session_file = output_folder / "session.json";
+
+                    if (fs::is_directory(output_folder))
+                    {
+                        auto it =
+                            std::find(project_settings.session_file_names.begin(), project_settings.session_file_names.end(), session_file);
+
+                        if (it == project_settings.session_file_names.end())
+                        {
+                            std::cout << "Adding session file: '" << session_file << "'" << std::endl;
+                            project_settings.session_file_names.push_back(session_file.string());
+                        }
+                    }
+                    else
+                    {
+                        missing.push_back(output_folder);
+                    }
+                }
+
+                for (const auto& miss : missing)
+                {
+                    std::cout << miss << " doesn't exist" << std::endl;
+                }
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Close"))
+            {
+                ImGui::CloseCurrentPopup();
+                show_instruction = false;
+            }
+
+            if (show_instruction)
+            {
+                ImGui::BeginChild("InstructionChild", ImVec2(720, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+                ImGui::Separator();
+
+                ImGui::TextWrapped("Required folder structure:");
+
+                ImGui::Spacing();
+
+                ImGui::TextWrapped("Folders must follow the structure generated in benchmark-HDMapping-Orchestration (step 3):");
+                ImGui::TextWrapped("https://github.com/MapsHD/benchmark-HDMapping-Orchestration");
+
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                ImGui::BulletText("chosen_folder/");
+                ImGui::BulletText("  ct-icp/output_hdmapping-ct-icp/session.json");
+                ImGui::BulletText("  glim/output_hdmapping-glim/session.json");
+                ImGui::BulletText("  kiss-icp/output_hdmapping-kiss/session.json");
+                ImGui::BulletText("  fast-lio/output_hdmapping-fast-lio/session.json");
+                ImGui::BulletText("  ... (same pattern for other algorithms)");
+
+                ImGui::Spacing();
+                ImGui::EndChild();
+            }
+
+            ImGui::EndPopup();
+        }
         if (project_settings.session_file_names.size() > 0)
         {
             ImGui::Separator();
@@ -3278,10 +3396,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampLidar,x,y,z,"
-                                    << "r00,r01,r02,"
-                                    << "r10,r11,r12,"
-                                    << "r20,r21,r22\n";
+                            outfile << "timestampLidar,x,y,z," << "r00,r01,r02," << "r10,r11,r12," << "r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3336,8 +3451,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampUnix,x,y,z,"
-                                    << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
+                            outfile << "timestampUnix,x,y,z," << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3388,8 +3502,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampLidar,timestampUnix,x,y,z,"
-                                    << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
+                            outfile << "timestampLidar,timestampUnix,x,y,z," << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3822,17 +3935,20 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
 
         if (ImGui::Button("Remove"))
         {
-            for (size_t i = project_settings.session_file_names.size() - 1; i >= 0; i--)
+            for (size_t i = project_settings.session_file_names.size(); i > 0; --i)
             {
-                if (session_marked_for_removal[i])
+                size_t idx = i - 1;
+
+                if (session_marked_for_removal[idx])
                 {
-                    std::cout << "Removing session: " << project_settings.session_file_names[i] << std::endl;
-                    project_settings.session_file_names.erase(project_settings.session_file_names.begin() + i);
-                    if ((sessions.size() > 0) && i < sessions.size())
-                        sessions.erase(sessions.begin() + i);
+                    std::cout << "Removing session: " << project_settings.session_file_names[idx] << std::endl;
+
+                    project_settings.session_file_names.erase(project_settings.session_file_names.begin() + idx);
+
+                    if (idx < sessions.size())
+                        sessions.erase(sessions.begin() + idx);
                 }
             }
-
             session_marked_for_removal.clear();
 
             if (!sessions.empty())

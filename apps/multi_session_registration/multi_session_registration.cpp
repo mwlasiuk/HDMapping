@@ -2250,7 +2250,7 @@ void settings_gui()
                         if (it == project_settings.session_file_names.end())
                         {
                             std::cout << "Adding session file: '" << session_file << "'" << std::endl;
-                            project_settings.session_file_names.push_back(session_file);
+                            project_settings.session_file_names.push_back(session_file.string());
                         }
                     }
                     else

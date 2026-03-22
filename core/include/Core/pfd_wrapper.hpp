@@ -28,7 +28,7 @@ namespace mandeye::fd
     const std::vector<std::string> Resso_filter = { "RESSO (*.reg)", "*.reg" };
     const std::vector<std::string> Dxf_filter = { "DXF file (*.dxf)", "*.dxf" };
     const std::vector<std::string> Csv_filter = { "CSV file (*.csv)", "*.csv" };
-    const std::vector<std::string> Toml_filter = { "TOML file (*.toml)", "*.toml" };
+    const std::vector<std::string> Toml_filter = { "TOML file (*.toml)", "*.toml", "All files", "*" };
     const std::vector<std::string> All_Filter = {
         "All supported files (*.bmp, *.csv, *.dxf, *.jpg, *.jpeg, *.json, *.las, *.laz, *.mjc, *.png, *.sn)",
         "*.bmp *.csv *.dxf *.jpg *.jpeg *.json *.las *.laz *.mjc *.png *.sn",

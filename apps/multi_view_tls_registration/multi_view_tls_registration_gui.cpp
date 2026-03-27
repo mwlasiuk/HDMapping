@@ -2754,16 +2754,20 @@ void display()
                 // ImGui::EndDisabled();
 
                 ImGui::Separator();
-
                 if (ImGui::BeginMenu("Save all marked scans"))
                 {
+                    static bool skip_ts_0 = true;
+                    ImGui::Checkbox("Skip points with zero ts", &skip_ts_0);
+                    if (ImGui::IsItemHovered())
+                        ImGui::SetTooltip("Invalid points with zero timestamp will be skipped during export");
+
                     if (ImGui::MenuItem("Local scan"))
                     {
                         const auto output_file_name = mandeye::fd::SaveFileDialog(out_fn.c_str(), mandeye::fd::LAS_LAZ_filter, ".laz");
                         spdlog::info("laz file to save: '{}'", output_file_name);
 
                         if (output_file_name.size() > 0)
-                            save_all_to_las(session, output_file_name, true, true);
+                            save_all_to_las(session, output_file_name, true, skip_ts_0);
                     }
                     if (ImGui::IsItemHovered())
                         ImGui::SetTooltip("As one local scan transformed via inverse pose of first scan");
@@ -2774,13 +2778,13 @@ void display()
                         spdlog::info("laz file to save: '{}'", output_file_name);
 
                         if (output_file_name.size() > 0)
-                            save_all_to_las(session, output_file_name, false, true);
+                            save_all_to_las(session, output_file_name, false, skip_ts_0);
                     }
                     if (ImGui::IsItemHovered())
                         ImGui::SetTooltip(
                             "To export in full resolution, close the program and open again and unmark 'downsample during "
                             "load' before loading session");
-
+                    ImGui::Separator();
                     if (ImGui::MenuItem("Separate global scans (laz)"))
                     {
                         std::string output_folder_name_separately = "";

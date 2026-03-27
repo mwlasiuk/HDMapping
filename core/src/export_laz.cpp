@@ -33,14 +33,14 @@ public:
 
         if (laszip_create(&writer_))
         {
-            fprintf(stderr, "DLL ERROR: creating laszip writer\n");
+            spdlog::error("DLL ERROR: creating laszip writer");
             return false;
         }
 
         laszip_header* header;
         if (laszip_get_header_pointer(writer_, &header))
         {
-            fprintf(stderr, "DLL ERROR: getting header pointer from laszip writer\n");
+            spdlog::error("DLL ERROR: getting header pointer from laszip writer");
             return false;
         }
 
@@ -63,15 +63,15 @@ public:
         laszip_BOOL compress = (strstr(filename.c_str(), ".laz") != 0);
         if (laszip_open_writer(writer_, filename.c_str(), compress))
         {
-            fprintf(stderr, "DLL ERROR: opening laszip writer for '%s'\n", filename.c_str());
+            spdlog::error("DLL ERROR: opening laszip writer for '{}'", filename);
             return false;
         }
 
-        fprintf(stderr, "writing %scompressed file '%s'\n", (compress ? "" : "un"), filename.c_str());
+        spdlog::info("writing {} compressed file '{}'\n", (compress ? "" : "un"), filename);
 
         if (laszip_get_point_pointer(writer_, &point_))
         {
-            fprintf(stderr, "DLL ERROR: getting point pointer from laszip writer\n");
+            spdlog::error("DLL ERROR: getting point pointer from laszip writer");
             return false;
         }
 
@@ -93,19 +93,19 @@ public:
 
         if (laszip_set_coordinates(writer_, coordinates))
         {
-            fprintf(stderr, "DLL ERROR: setting coordinates\n");
+            spdlog::error("DLL ERROR: setting coordinates");
             return false;
         }
 
         if (laszip_write_point(writer_))
         {
-            fprintf(stderr, "DLL ERROR: writing point\n");
+            spdlog::error("DLL ERROR: writing point");
             return false;
         }
 
         if (laszip_update_inventory(writer_))
         {
-            fprintf(stderr, "DLL ERROR: updating inventory\n");
+            spdlog::error("DLL ERROR: updating inventory");
             return false;
         }
 
@@ -120,21 +120,21 @@ public:
         laszip_I64 p_count = 0;
         if (laszip_get_point_count(writer_, &p_count))
         {
-            fprintf(stderr, "DLL ERROR: getting point count\n");
+            spdlog::error("DLL ERROR: getting point count");
             return false;
         }
 
-        fprintf(stderr, "successfully written %lld points\n", p_count);
+        spdlog::error("successfully written {} points", p_count);
 
         if (laszip_close_writer(writer_))
         {
-            fprintf(stderr, "DLL ERROR: closing laszip writer\n");
+            spdlog::error("DLL ERROR: closing laszip writer");
             return false;
         }
 
         if (laszip_destroy(writer_))
         {
-            fprintf(stderr, "DLL ERROR: destroying laszip writer\n");
+            spdlog::error("DLL ERROR: destroying laszip writer");
             return false;
         }
 
@@ -182,14 +182,14 @@ void save_processed_pc(
     laszip_POINTER laszip_reader;
     if (laszip_create(&laszip_reader))
     {
-        fprintf(stderr, "DLL ERROR: creating laszip reader\n");
+        spdlog::error("DLL ERROR: creating laszip reader");
         std::abort();
     }
 
     laszip_POINTER laszip_writer;
     if (laszip_create(&laszip_writer))
     {
-        fprintf(stderr, "DLL ERROR: creating laszip reader\n");
+        spdlog::error("DLL ERROR: creating laszip reader");
         std::abort();
     }
 
@@ -199,7 +199,7 @@ void save_processed_pc(
     laszip_BOOL is_compressed = 0;
     if (laszip_open_reader(laszip_reader, file_name_in.c_str(), &is_compressed))
     {
-        fprintf(stderr, "DLL ERROR: opening laszip reader for '%s'\n", file_name_in.c_str());
+        spdlog::error("DLL ERROR: opening laszip reader for '{}'", file_name_in);
         std::abort();
     }
     std::cout << "compressed : " << is_compressed << std::endl;
@@ -208,7 +208,7 @@ void save_processed_pc(
 
     if (laszip_get_header_pointer(laszip_reader, &header))
     {
-        fprintf(stderr, "DLL ERROR: getting header pointer from laszip reader\n");
+        spdlog::error("DLL ERROR: getting header pointer from laszip reader");
         std::abort();
     }
 
@@ -227,11 +227,11 @@ void save_processed_pc(
 
     if (laszip_set_header(laszip_writer, header))
     {
-        fprintf(stderr, "DLL ERROR: setting header pointer from laszip reader\n");
+        spdlog::error("DLL ERROR: setting header pointer from laszip reader");
         std::abort();
     }
 
-    fprintf(stderr, "file '%s' contains %u points\n", file_name_in.c_str(), header->number_of_point_records);
+    spdlog::info("file '{}' contains {} points", file_name_in, header->number_of_point_records);
 
     if (override_compressed)
     {
@@ -241,21 +241,21 @@ void save_processed_pc(
 
     if (laszip_open_writer(laszip_writer, file_name_out.c_str(), is_compressed))
     {
-        fprintf(stderr, "DLL ERROR: opening laszip writer for '%s'\n", file_name_out.c_str());
+        spdlog::error("DLL ERROR: opening laszip writer for '{}'", file_name_out);
         return;
     }
 
     laszip_point* input_point;
     if (laszip_get_point_pointer(laszip_reader, &input_point))
     {
-        fprintf(stderr, "DLL ERROR: getting point pointer from laszip reader\n");
+        spdlog::error("DLL ERROR: getting point pointer from laszip reader");
         std::abort();
     }
 
     laszip_point* output_point;
     if (laszip_get_point_pointer(laszip_writer, &output_point))
     {
-        fprintf(stderr, "DLL ERROR: getting point pointer from laszip reader\n");
+        spdlog::error("DLL ERROR: getting point pointer from laszip reader");
         std::abort();
     }
 
@@ -263,14 +263,14 @@ void save_processed_pc(
     {
         if (laszip_read_point(laszip_reader))
         {
-            fprintf(stderr, "DLL ERROR: reading point %u\n", i);
+            spdlog::error("DLL ERROR: reading point {}", i);
             std::abort();
         }
 
         laszip_F64 input_coordinates[3];
         if (laszip_get_coordinates(laszip_reader, input_coordinates))
         {
-            fprintf(stderr, "DLL ERROR: laszip_set_coordinates %u\n", i);
+            spdlog::error("DLL ERROR: laszip_set_coordinates {}", i);
             std::abort();
         }
 
@@ -283,9 +283,8 @@ void save_processed_pc(
         output_coordinates[2] = pg.z();
 
         if (laszip_set_coordinates(laszip_writer, output_coordinates))
-        // if (laszip_set_coordinates(laszip_writer, input_coordinates))
         {
-            fprintf(stderr, "DLL ERROR: laszip_set_coordinates %u\n", i);
+            spdlog::error("DLL ERROR: laszip_set_coordinates {}", i);
             std::abort();
         }
         output_point->intensity = input_point->intensity;
@@ -296,13 +295,13 @@ void save_processed_pc(
 
         if (laszip_write_point(laszip_writer))
         {
-            fprintf(stderr, "DLL ERROR: writing point %u\n", i);
+            spdlog::error("DLL ERROR: writing point {}", i);
             return;
         }
 
         if (laszip_update_inventory(laszip_writer))
         {
-            fprintf(stderr, "DLL ERROR: updating inventory for point %u\n", i);
+            spdlog::error("DLL ERROR: updating inventory for point {}", i);
             return;
         }
     }
@@ -310,7 +309,7 @@ void save_processed_pc(
     // close the reader
     if (laszip_close_reader(laszip_reader))
     {
-        fprintf(stderr, "DLL ERROR: closing laszip reader\n");
+        spdlog::error("DLL ERROR: closing laszip reader");
         return;
     }
 
@@ -318,24 +317,24 @@ void save_processed_pc(
 
     if (laszip_destroy(laszip_reader))
     {
-        fprintf(stderr, "DLL ERROR: destroying laszip reader\n");
+        spdlog::error("DLL ERROR: destroying laszip reader");
         return;
     }
 
     laszip_I64 p_count{ 0 };
     if (laszip_get_point_count(laszip_writer, &p_count))
     {
-        fprintf(stderr, "DLL ERROR: getting point count\n");
+        spdlog::error("DLL ERROR: getting point count");
         return;
     }
 
-    fprintf(stderr, "successfully written %lld points\n", p_count);
+    spdlog::info("successfully written {} points", p_count);
 
     // close the writer
 
     if (laszip_close_writer(laszip_writer))
     {
-        fprintf(stderr, "DLL ERROR: closing laszip writer\n");
+        spdlog::error("DLL ERROR: closing laszip writer");
         return;
     }
 
@@ -344,7 +343,7 @@ void save_processed_pc(
     // ToDo --> solve it
     if (laszip_destroy(laszip_writer))
     {
-        fprintf(stderr, "DLL ERROR: destroying laszip writer\n");
+        spdlog::error("DLL ERROR: destroying laszip writer");
         return;
     }
 

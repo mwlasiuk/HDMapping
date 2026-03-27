@@ -12,6 +12,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <laszip/laszip_api.h>
+
 #include <spdlog/spdlog.h>
 
 #include <Eigen/Eigen>

@@ -28,6 +28,8 @@
 #include <filesystem>
 #include <mutex>
 
+#include <laszip/laszip_api.h>
+
 #include <spdlog/spdlog.h>
 
 #define SAMPLE_PERIOD (1.0 / 200.0)

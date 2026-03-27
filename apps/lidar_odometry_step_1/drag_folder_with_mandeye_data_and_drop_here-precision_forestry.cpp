@@ -21,9 +21,12 @@
 
 #include "toml_io.h"
 #include <HDMapping/Version.hpp>
+
 #include <chrono>
 #include <ctime>
 #include <mutex>
+#include <set>
+
 #include <spdlog/cfg/env.h>
 #include <spdlog/spdlog.h>
 
@@ -272,7 +275,7 @@ std::string formatCompletionTime(double remainingSeconds)
     return std::string(timeStr);
 }
 
-int get_index_3d(const set<int>& s, int k)
+int get_index_3d(const std::set<int>& s, int k)
 {
     int index = 0;
     for (auto u : s)

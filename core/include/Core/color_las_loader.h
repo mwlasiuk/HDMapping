@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Eigen/Dense>
-#include <laszip/laszip_api.h>
 #include <vector>
 
 namespace mandeye

@@ -8,6 +8,8 @@
 
 #include <Core/hash_utils.h>
 
+#include <laszip/laszip_api.h>
+
 #include <spdlog/spdlog.h>
 
 namespace fs = std::filesystem;

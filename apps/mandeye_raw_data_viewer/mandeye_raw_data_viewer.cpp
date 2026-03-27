@@ -1265,7 +1265,7 @@ void imu_data_gui()
             output_file_name = mandeye::fd::SaveFileDialog("Save IMU data", {}, "");
             spdlog::info("file to save: '{}'", output_file_name);
 
-            ofstream file;
+            std::ofstream file;
             file.open(output_file_name);
             file << std::setprecision(20);
             for (size_t i = 0; i < imu_data_plot.timestampLidar.size(); i++)

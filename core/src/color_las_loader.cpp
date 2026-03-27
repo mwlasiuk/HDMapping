@@ -2,6 +2,8 @@
 
 #include "Core/color_las_loader.h"
 
+#include <laszip/laszip_api.h>
+
 #include <spdlog/spdlog.h>
 
 std::vector<mandeye::Point> mandeye::load(const std::string& lazFile)

@@ -12,7 +12,6 @@
 
 #include <Eigen/Dense>
 #include <common/include/cauchy.h>
-#include <laszip/laszip_api.h>
 #include <nlohmann/json.hpp>
 #include <vqf.hpp>
 

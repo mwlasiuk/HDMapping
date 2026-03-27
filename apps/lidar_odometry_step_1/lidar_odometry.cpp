@@ -1036,7 +1036,7 @@ void filter_reference_buckets(LidarOdometryParams& params)
 
 void save_trajectory_to_ascii(std::vector<WorkerData>& worker_data, std::string output_file_name)
 {
-    ofstream file;
+    std::ofstream file;
     file.open(output_file_name);
     for (const auto& wd : worker_data)
     {
@@ -1241,7 +1241,7 @@ void save_processing_results_json(const LidarOdometryParams& params, const fs::p
             file << results.dump(4); // Pretty print with 4-space indentation
             file.close();
             std::cout << "Processing results saved to JSON file: " << json_path << std::endl;
-            std::cout << "Processing time: " << fixed << std::setprecision(2) << elapsed_seconds << " [s]" << std::endl;
+            std::cout << "Processing time: " << std::fixed << std::setprecision(2) << elapsed_seconds << " [s]" << std::endl;
         }
         else
         {

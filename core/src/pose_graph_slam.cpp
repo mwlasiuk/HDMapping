@@ -34,10 +34,6 @@
 
 #endif
 
-#if WITH_MANIF
-#include <manif/SE3.h>
-#endif
-
 std::random_device rd;
 std::mt19937 gen(rd());
 

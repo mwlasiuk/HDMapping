@@ -18,7 +18,7 @@ target_include_directories(
                      ${EIGEN3_INCLUDE_DIR}
                      ${LASZIP_INCLUDE_DIR}/LASzip/include)
 
-target_link_libraries(multiply_timestamps_session_point_cloud_laz PRIVATE ${PLATFORM_MISCELLANEOUS_LIBS} ${PLATFORM_LASZIP_LIB} spdlog::spdlog)
+target_link_libraries(multiply_timestamps_session_point_cloud_laz PRIVATE ${PLATFORM_MISCELLANEOUS_LIBS} ${PLATFORM_LASZIP_LIB} core spdlog::spdlog)
 
 add_executable(multiply_timestamps_session_trajectory_csv multiply_timestamps_session_trajectory_csv.cpp)
 

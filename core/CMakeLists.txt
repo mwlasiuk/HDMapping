@@ -5,6 +5,7 @@ project(core)
 set(CORE_BASE_SOURCES
     src/color_las_loader.cpp
     src/control_points.cpp
+    src/export_laz.cpp
     src/gnss.cpp
     src/ground_control_points.cpp
     src/hash_utils.cpp

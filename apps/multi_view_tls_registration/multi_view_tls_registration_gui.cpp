@@ -795,13 +795,7 @@ void pose_graph_slam_gui()
             tls_registration.pose_graph_slam.ndt_bucket_size[0] = tls_registration.ndt.bucket_size[0];
             tls_registration.pose_graph_slam.ndt_bucket_size[1] = tls_registration.ndt.bucket_size[1];
             tls_registration.pose_graph_slam.ndt_bucket_size[2] = tls_registration.ndt.bucket_size[2];
-            // double rms_initial = 0.0;
-            // double rms_final = 0.0;
-            // double mui = 0.0;
             tls_registration.pose_graph_slam.optimize(session.point_clouds_container);
-            // pose_graph_slam.optimize(point_clouds_container, rms_initial, rms_final, mui);
-            // spdlog::info("mean uncertainty impact: " << mui << " rms_initial: " << rms_initial << " rms_final: " << rms_final <<
-            // std::endl;
         }
 
 #if WITH_GTSAM
@@ -816,8 +810,6 @@ void pose_graph_slam_gui()
             double rms_final = 0.0;
             double mui = 0.0;
             tls_registration.pose_graph_slam.optimize_with_GTSAM(session.point_clouds_container);
-            // spdlog::info("mean uncertainty impact: " << mui << " rms_initial: " << rms_initial << " rms_final: " << rms_final <<
-            // std::endl;
         }
 #endif
 

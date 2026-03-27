@@ -400,7 +400,7 @@ void loop_closure_gui()
         }
 
         std::string number_active_edges = "number_edges: " + std::to_string(edges.size());
-        ImGui::Text(number_active_edges.c_str());
+        ImGui::Text("%s", number_active_edges.c_str());
         if (edges.size() > 0)
         {
             ImGui::Checkbox("manipulate_active_edge", &manipulate_active_edge);
@@ -437,13 +437,13 @@ void loop_closure_gui()
                 }
 
                 std::string txt = "index_session_from: " + std::to_string(edges[index_active_edge].index_session_from);
-                ImGui::Text(txt.c_str());
+                ImGui::Text("%s", txt.c_str());
                 txt = "index_session_to: " + std::to_string(edges[index_active_edge].index_session_to);
-                ImGui::Text(txt.c_str());
+                ImGui::Text("%s", txt.c_str());
                 txt = "index_from: " + std::to_string(edges[index_active_edge].index_from);
-                ImGui::Text(txt.c_str());
+                ImGui::Text("%s", txt.c_str());
                 txt = "index_to: " + std::to_string(edges[index_active_edge].index_to);
-                ImGui::Text(txt.c_str());
+                ImGui::Text("%s", txt.c_str());
 
                 if (remove_edge_index != -1)
                 {
@@ -2309,9 +2309,9 @@ void settings_gui()
 
             for (size_t i = 0; i < project_settings.session_file_names.size(); i++)
             {
-                ImGui::Text(truncPath(project_settings.session_file_names[i]).c_str());
+                ImGui::Text("%s", truncPath(project_settings.session_file_names[i]).c_str());
                 if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip(project_settings.session_file_names[i].c_str());
+                    ImGui::SetTooltip("%s", project_settings.session_file_names[i].c_str());
 
                 if (project_settings.session_file_names.size() == sessions.size())
                 {

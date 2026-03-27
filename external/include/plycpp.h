@@ -84,9 +84,13 @@ namespace plycpp
 		{
 			auto it = std::find_if(begin(), end(), [&key](const MyKeyData& a){ return a.key == key; });
 			if (it != end())
+			{
 				return it->data;
-			else {}
-				//throw Exception("Invalid key.");
+			}
+
+			return nullptr;
+
+			//throw Exception("Invalid key.");
 		}
 
 		const std::shared_ptr<const Data> operator[] (const Key& key) const

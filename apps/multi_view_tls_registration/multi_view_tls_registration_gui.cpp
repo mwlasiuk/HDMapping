@@ -885,7 +885,7 @@ void observation_picking_gui()
         }
         ImGui::EndDisabled();
 
-        ImGui::Text((std::string("Number of observations: ") + std::to_string(observation_picking.observations.size())).c_str());
+        ImGui::Text("Number of observations: %zu", observation_picking.observations.size());
 
         if (ImGui::Button("Load observations"))
         {
@@ -926,7 +926,7 @@ void observation_picking_gui()
                 observation_picking.export_observation(output_file_name);
         }
 
-        ImGui::Text((std::string("Loaded observations from file: '") + observations_file_name + std::string("'")).c_str());
+        ImGui::Text("Loaded observations from file: %s", observations_file_name.c_str());
 
         if (ImGui::Button("Compute RMS (xy)"))
         {
@@ -1821,7 +1821,7 @@ void settings_gui()
     ImGui::Begin("Settings", &is_settings_gui);
     {
         std::string wd = "Working directory: '" + session.working_directory + "'";
-        ImGui::Text(wd.c_str());
+        ImGui::Text("%s", wd.c_str());
 
         ImGui::NewLine();
 
@@ -1991,7 +1991,7 @@ void settings_gui()
             }
         }
         ImGui::SameLine();
-        ImGui::Text(session.point_clouds_container.initial_poses_file_name.c_str());
+        ImGui::Text("%s", session.point_clouds_container.initial_poses_file_name.c_str());
 
         if (ImGui::Button("Update poses from RESSO file"))
         {
@@ -2039,7 +2039,7 @@ void settings_gui()
             }
         }
         ImGui::SameLine();
-        ImGui::Text(session.point_clouds_container.poses_file_name.c_str());
+        ImGui::Text("%s", session.point_clouds_container.poses_file_name.c_str());
 
         ImGui::Separator();
 
@@ -3250,9 +3250,9 @@ void display()
             {
                 ImGui::BeginTooltip();
                 ImGui::Text("Loaded session:");
-                ImGui::Text(std::string(session.session_file_name).c_str());
+                ImGui::Text("%s", session.session_file_name.c_str());
                 ImGui::Separator();
-                ImGui::Text("Total number of points: %zu", session_total_number_of_points);
+                ImGui::Text("Total number of points: %d", session_total_number_of_points);
 
                 if (ImGui::BeginTable("Dimensions", 4))
                 {

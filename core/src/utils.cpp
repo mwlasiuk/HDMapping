@@ -1096,7 +1096,7 @@ void info_window(const std::vector<std::string>& infoLines, const std::vector<Sh
             else if (line.rfind("https://", 0) == 0) // starts with "https://"
                 ImGuiHyperlink(line.c_str());
             else
-                ImGui::Text(line.c_str());
+                ImGui::Text("%s", line.c_str());
 
             if (firstLine)
             {

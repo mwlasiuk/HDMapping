@@ -756,15 +756,15 @@ void openSession()
 void session_gui()
 {
     ImGui::Text("File name:");
-    ImGui::Text(session.session_file_name.c_str());
+    ImGui::Text("%s", session.session_file_name.c_str());
     ImGui::Text("Working directory:");
-    ImGui::Text(session.working_directory.c_str());
+    ImGui::Text("%s", session.working_directory.c_str());
 
     ImGui::Separator();
 
     ImGui::Text("Is ground truth: %s", session.is_ground_truth ? "yes" : "no");
     ImGui::Text("Number of clouds: %zu", session.point_clouds_container.point_clouds.size());
-    ImGui::Text("Number of points: %zu", session_total_number_of_points);
+    ImGui::Text("Number of points: %d", session_total_number_of_points);
 
     ImGui::Separator();
 
@@ -848,9 +848,9 @@ void session_gui()
 void index_gui()
 {
     ImGui::Text("File name:");
-    ImGui::Text(session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
+    ImGui::Text("%s", session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
 
-    ImGui::Text("Current index: %zu / %zu", index_rendered_points_local, session.point_clouds_container.point_clouds.size());
+    ImGui::Text("Current index: %d / %zu", index_rendered_points_local, session.point_clouds_container.point_clouds.size());
 
     ImGui::Separator();
 
@@ -1319,7 +1319,7 @@ void display()
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
-                ImGui::Text(session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
+                ImGui::Text("%s", session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
                 double ts = (session.point_clouds_container.point_clouds[index_rendered_points_local].timestamps[0] -
                              session.point_clouds_container.point_clouds[0].timestamps[0]) /
                     1e9;
@@ -1333,7 +1333,7 @@ void display()
             if (ImGui::IsItemHovered())
             {
                 ImGui::BeginTooltip();
-                ImGui::Text(session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
+                ImGui::Text("%s", session.point_clouds_container.point_clouds[index_rendered_points_local].file_name.c_str());
                 double ts = (session.point_clouds_container.point_clouds[index_rendered_points_local].timestamps[0] -
                              session.point_clouds_container.point_clouds[0].timestamps[0]) /
                     1e9;

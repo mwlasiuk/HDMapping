@@ -1800,7 +1800,7 @@ void display()
             {
                 ImGui::BeginTooltip();
                 std::string fn = laz_files[indexes_to_filename[index_rendered_points_local]];
-                ImGui::Text(fn.c_str());
+                ImGui::Text("%s", fn.c_str());
                 ImGui::EndTooltip();
             }
             ImGui::SameLine();
@@ -1809,7 +1809,7 @@ void display()
             {
                 ImGui::BeginTooltip();
                 std::string fn = laz_files[indexes_to_filename[index_rendered_points_local]];
-                ImGui::Text(fn.c_str());
+                ImGui::Text("%s", fn.c_str());
                 ImGui::EndTooltip();
             }
             ImGui::PopItemWidth();

@@ -108,8 +108,12 @@ namespace plycpp
 		{
 			return it->second;
 		}
-		else{}
-			//throw Exception(std::string("Unkown data type:" + name));
+		else
+		{
+			return typeid(void);
+		}
+		
+		//throw Exception(std::string("Unkown data type:" + name));
 	}
 
 	std::string dataTypeToString(const std::type_index& type)

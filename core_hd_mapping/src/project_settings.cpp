@@ -137,7 +137,7 @@ void ProjectSettings::imgui(
 
     for (size_t i = 0; i < trajectories.size(); i++)
     {
-        ImGui::Text(std::string(trajectories[i].trajectory_file).c_str());
+        ImGui::Text("%s", trajectories[i].trajectory_file.c_str());
         ImGui::SameLine();
         ImGui::Checkbox(("[" + std::to_string(i) + "] visible").c_str(), &trajectories[i].visible);
         ImGui::SameLine();
@@ -171,7 +171,8 @@ void ProjectSettings::imgui(
 
         // ImGui::SameLine();
     }
-    ImGui::Text(("total_length: " + std::to_string(int(total_length)) + "[m]").c_str());
+
+    ImGui::Text("total_length: %d [m]", (int)total_length);
 
     if (ImGui::Button("pose graph slam"))
     {

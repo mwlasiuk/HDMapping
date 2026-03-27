@@ -1688,7 +1688,7 @@ void progress_window()
 {
     ImGui::Begin("Progress", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-    ImGui::Text(("Working directory:\n'" + working_directory + "'").c_str());
+    ImGui::Text("Working directory: %s", working_directory.c_str());
 
     // Calculate elapsed time and ETA
     auto currentTime = std::chrono::system_clock::now();

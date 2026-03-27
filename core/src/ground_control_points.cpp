@@ -61,7 +61,7 @@ void GroundControlPoints::imgui(PointClouds& point_clouds_container)
         int remove_gcp_index = -1;
         for (int i = 0; i < gpcs.size(); i++)
         {
-            ImGui::Text(("GCP_" + std::to_string(i) + " (" + gpcs[i].name + ")").c_str());
+            ImGui::Text("GCP_%d (%s)", i, gpcs[i].name);
             ImGui::SameLine();
             if (ImGui::Button(("Remove##" + std::to_string(i)).c_str()))
             {

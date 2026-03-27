@@ -637,8 +637,8 @@ void TimeStampCount()
         }
 
         ImGui::Text("Packed uint32_t: %u", packedValue);
-        ImGui::Text("Decoded timestamp: %llu", decodedValue);
-        ImGui::Text("Timestamp: %llu", fullTimestamp);
+        ImGui::Text("Decoded timestamp: %zu", decodedValue);
+        ImGui::Text("Timestamp: %zu", fullTimestamp);
         double timestampSeconds = static_cast<double>(fullTimestamp) / 1'000'000'000.0;
         ImGui::Text("Timestamp (formatted): %.6f", timestampSeconds);
 
@@ -1264,7 +1264,7 @@ void display()
     {
         auto index = std::distance(SystemData::pointPickedImage.begin(), it);
         const auto& p = *it;
-        ImGui::Text("%d : %.1f,%.1f", index, p.x, p.y);
+        ImGui::Text("%d : %.1f,%.1f", (int)index, p.x, p.y);
         ImGui::SameLine();
         const auto label = std::string("-##2s") + std::to_string(index);
         if (ImGui::Button(label.c_str()))

@@ -2,7 +2,6 @@
 
 #include <Core/pfd_wrapper.hpp>
 
-#include <CoreHDMapping/laz_wrapper.h>
 #include <CoreHDMapping/roi_exporter.h>
 #include <CoreHDMapping/single_trajectory_viewer.h>
 
@@ -347,95 +346,6 @@ void RoiExporter::render(const CommonData& common_data)
             glPointSize(1);
         }
     }
-}
-
-PointCloudWithPose RoiExporter::get_pc_from_laz(CommonData& common_data, std::vector<LAZSector>& sectors, double shift_x, double shift_y)
-{
-    std::cout << "Number of LAZSectors: " << sectors.size() << std::endl;
-
-    PointCloudWithPose pc;
-    pc.trajectory_file_name = "georeference";
-    pc.m_pose = Eigen::Affine3d::Identity();
-    pc.timestamp = 0.0;
-    pc.visible = true;
-
-    std::vector<int> indexes;
-
-    for (size_t i = 0; i < sectors.size(); i++)
-    {
-        if ((common_data.roi.x() - common_data.roi_size > sectors[i].min_x) &&
-            (common_data.roi.x() - common_data.roi_size < sectors[i].max_x))
-        {
-            if ((common_data.roi.y() - common_data.roi_size > sectors[i].min_y) &&
-                (common_data.roi.y() - common_data.roi_size < sectors[i].max_y))
-            {
-                indexes.push_back(i);
-            }
-        }
-        if ((common_data.roi.x() - common_data.roi_size > sectors[i].min_x) &&
-            (common_data.roi.x() - common_data.roi_size < sectors[i].max_x))
-        {
-            if ((common_data.roi.y() + common_data.roi_size > sectors[i].min_y) &&
-                (common_data.roi.y() + common_data.roi_size < sectors[i].max_y))
-            {
-                indexes.push_back(i);
-            }
-        }
-        if ((common_data.roi.x() + common_data.roi_size > sectors[i].min_x) &&
-            (common_data.roi.x() + common_data.roi_size < sectors[i].max_x))
-        {
-            if ((common_data.roi.y() + common_data.roi_size > sectors[i].min_y) &&
-                (common_data.roi.y() + common_data.roi_size < sectors[i].max_y))
-            {
-                indexes.push_back(i);
-            }
-        }
-        if ((common_data.roi.x() + common_data.roi_size > sectors[i].min_x) &&
-            (common_data.roi.x() + common_data.roi_size < sectors[i].max_x))
-        {
-            if ((common_data.roi.y() - common_data.roi_size > sectors[i].min_y) &&
-                (common_data.roi.y() - common_data.roi_size < sectors[i].max_y))
-            {
-                indexes.push_back(i);
-            }
-        }
-    }
-
-    std::sort(indexes.begin(), indexes.end());
-    auto last = std::unique(indexes.begin(), indexes.end());
-    indexes.erase(last, indexes.end());
-
-    for (const auto& i : indexes)
-    {
-        if (sectors[i].point_cloud.size() == 0)
-        {
-            LazWrapper lw;
-            LAZSector sector = lw.load_sector(sectors[i].file_name, shift_x, shift_y);
-            sectors[i].point_cloud = sector.point_cloud;
-            sectors[i].visible = false;
-        }
-
-        for (const auto& p : sectors[i].point_cloud)
-        {
-            float roi_size_extended = common_data.roi_size * 1.5;
-            if ((p.x > common_data.roi.x() - roi_size_extended) && (p.x < common_data.roi.x() + roi_size_extended))
-            {
-                if ((p.y > common_data.roi.y() - roi_size_extended) && (p.y < common_data.roi.y() + roi_size_extended))
-                {
-                    Point new_point;
-                    new_point.x = p.x;
-                    new_point.y = p.y;
-                    new_point.z = p.z;
-                    new_point.time = 0.0;
-                    new_point.intensity = ((float(p.r) + float(p.g) + float(p.b)) / 3.0f) * 256;
-                    pc.points_global.push_back(new_point);
-                }
-            }
-        }
-    }
-
-    std::cout << pc.points_global.size() << std::endl;
-    return pc;
 }
 
 typedef std::vector<std::vector<float>> Cloud;

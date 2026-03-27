@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 4.0.0)
 project(core-hd-mapping)
 
 add_library(core-hd-mapping STATIC
-    src/laz_wrapper.cpp
     src/odo_with_gnss_fusion.cpp
     src/project_settings.cpp
     src/roi_exporter.cpp

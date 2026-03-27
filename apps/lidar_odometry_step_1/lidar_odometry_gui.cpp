@@ -1,13 +1,12 @@
-﻿#include <imgui.h>
+﻿#include <GL/freeglut.h>
+
+#include <imgui.h>
 #include <imgui_impl_glut.h>
 #include <imgui_impl_opengl2.h>
 #include <imgui_internal.h>
 
 #include <ImGuizmo.h>
 
-// #define GLEW_STATIC
-// #include <GL/glew.h>
-#include <GL/freeglut.h>
 #include <portable-file-dialogs.h>
 
 #include "lidar_odometry.h"

@@ -7,9 +7,6 @@
 [submodule "3rdparty/LASzip"]
 	path = 3rdparty/LASzip
 	url = https://github.com/LASzip/LASzip.git
-[submodule "3rdparty/manif"]
-	path = 3rdparty/manif
-	url = https://github.com/artivis/manif.git
 [submodule "3rdparty/Fusion"]
 	path = 3rdparty/Fusion
 	url = https://github.com/xioTechnologies/Fusion.git
@@ -38,9 +35,6 @@
 [submodule "3rdparty/oneTBB"]
 	path = 3rdparty/oneTBB
 	url = https://github.com/oneapi-src/oneTBB.git
-[submodule "3rdparty/glew-cmake"]
-	path = 3rdparty/glew-cmake
-	url = https://github.com/Perlmint/glew-cmake.git
 [submodule "3rdparty/tomlplusplus"]
 	path = 3rdparty/tomlplusplus
 	url = https://github.com/marzer/tomlplusplus.git

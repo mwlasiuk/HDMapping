@@ -1,5 +1,5 @@
 // clang-format off
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GL/freeglut.h>
 //clang-format on
 

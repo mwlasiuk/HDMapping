@@ -1,14 +1,14 @@
+// clang-format off
+#include <glad/glad.h>
+#include <GL/freeglut.h>
+// clang-format on
+
 #include <imgui.h>
 #include <imgui_impl_glut.h>
 #include <imgui_impl_opengl2.h>
 #include <imgui_internal.h>
 
 #include <ImGuizmo.h>
-
-// clang-format off
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-// clang-format on
 
 #include <Eigen/Eigen>
 

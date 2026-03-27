@@ -4,7 +4,7 @@
 #include <iostream>
 
 // clang-format off
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GL/freeglut.h>
 // clang-format on
 
@@ -2033,101 +2033,6 @@ void perform_experiment_on_linux(
     append_to_result_file(result_file, "pose_graph_slam (pcl_icp)", pose_graph_slam, rms, id_method, elapsed);
     export_result_to_folder(path_result.string(), id_method, observation_picking, session);
     session.point_clouds_container = temp_data;
-#endif
-
-#if WITH_GTSAM
-    //--96--
-    try
-    {
-        pose_graph_slam.ndt_bucket_size[0] = ndt.bucket_size[0];
-        pose_graph_slam.ndt_bucket_size[1] = ndt.bucket_size[1];
-        pose_graph_slam.ndt_bucket_size[2] = ndt.bucket_size[2];
-
-        pose_graph_slam.set_all_to_false();
-        pose_graph_slam.is_optimize_pcl_ndt = true;
-        pose_graph_slam.is_lie_algebra_right_jacobian = true;
-        pose_graph_slam.pair_wise_matching_type = PoseGraphSLAM::PairWiseMatchingType::pcl_ndt;
-
-        auto start = std::chrono::system_clock::now();
-        pose_graph_slam.optimize_with_GTSAM(session.point_clouds_container);
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        rms = compute_rms(false, session, observation_picking);
-        id_method = 96;
-        append_to_result_file(result_file, "pose_graph_slam (GTSAM pcl_ndt)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-    } catch (std::exception& e)
-    {
-        std::cout << e.what() << std::endl;
-        rms = compute_rms(false, session, observation_picking);
-        // append_to_result_file(result_file, "pose_graph_slam (GTSAM pcl_ndt)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-    }
-    //--97--
-    try
-    {
-        pose_graph_slam.set_all_to_false();
-        pose_graph_slam.is_optimize_pcl_icp = true;
-        pose_graph_slam.is_lie_algebra_right_jacobian = true;
-        pose_graph_slam.pair_wise_matching_type = PoseGraphSLAM::PairWiseMatchingType::pcl_icp;
-
-        auto start = std::chrono::system_clock::now();
-        pose_graph_slam.optimize_with_GTSAM(session.point_clouds_container);
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-        rms = compute_rms(false, session, observation_picking);
-        id_method = 97;
-        append_to_result_file(result_file, "pose_graph_slam (GTSAM pcl_icp)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-    } catch (std::exception& e)
-    {
-        std::cout << e.what() << std::endl;
-        rms = compute_rms(false, session, observation_picking);
-        // append_to_result_file(result_file, "pose_graph_slam (GTSAM pcl_icp)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-    }
-#endif
-#if WITH_MANIF
-    //--98--
-    {
-        pose_graph_slam.set_all_to_false();
-        pose_graph_slam.is_optimize_pcl_ndt = true;
-        pose_graph_slam.is_lie_algebra_right_jacobian = true;
-        pose_graph_slam.pair_wise_matching_type = PoseGraphSLAM::PairWiseMatchingType::pcl_ndt;
-
-        auto start = std::chrono::system_clock::now();
-        pose_graph_slam.optimize_with_manif(session.point_clouds_container);
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-        rms = compute_rms(false, session, observation_picking);
-        id_method = 98;
-        append_to_result_file(result_file, "pose_graph_slam (manif pcl_ndt)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-
-        //--99--
-        pose_graph_slam.set_all_to_false();
-        pose_graph_slam.is_optimize_pcl_icp = true;
-        pose_graph_slam.is_lie_algebra_right_jacobian = true;
-        pose_graph_slam.pair_wise_matching_type = PoseGraphSLAM::PairWiseMatchingType::pcl_icp;
-
-        start = std::chrono::system_clock::now();
-        pose_graph_slam.optimize_with_manif(session.point_clouds_container);
-        end = std::chrono::system_clock::now();
-        elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-        rms = compute_rms(false, session, observation_picking);
-        id_method = 99;
-        append_to_result_file(result_file, "pose_graph_slam (manif pcl_icp)", pose_graph_slam, rms, id_method, elapsed);
-        export_result_to_folder(path_result.string(), id_method, observation_picking, session);
-        session.point_clouds_container = temp_data;
-    }
 #endif
 }
 

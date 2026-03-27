@@ -7,8 +7,7 @@
 
 #include <ImGuizmo.h>
 
-// #define GLEW_STATIC
-// #include <GL/glew.h>
+// #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

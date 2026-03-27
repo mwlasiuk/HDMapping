@@ -24,19 +24,10 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/imgui
           ${THIRDPARTY_DIRECTORY}/imgui/backends
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${FREEGLUT_INCLUDE_DIR}
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
           ${LASZIP_INCLUDE_DIR}/LASzip/include)
-
-if(WIN32)
-  add_custom_command(
-    TARGET hd_mapper
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:hd_mapper>
-            $<TARGET_FILE_DIR:hd_mapper>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 install(TARGETS hd_mapper DESTINATION bin)

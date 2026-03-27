@@ -5,6 +5,8 @@
 #  LASZIP_LIBRARY - the LASzip library
 #  LASZIP_VERSION - the version of the LASzip library (optional)
 
+include_guard()
+
 # Find the LASzip library
 find_path(LASZIP_INCLUDE_DIR
   NAMES laszip/laszip_api.h

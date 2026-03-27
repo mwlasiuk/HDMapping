@@ -79,9 +79,6 @@ public:
 
     void calculate_edges(std::vector<PointCloud>& point_clouds);
 
-    bool optimize_with_GTSAM(PointClouds& point_clouds_container);
-    bool optimize_with_manif(PointClouds& point_clouds_container);
-
     void set_all_to_false()
     {
         is_ndt_lie_algebra_left_jacobian = false;

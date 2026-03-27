@@ -172,30 +172,3 @@ set_target_properties(multi_view_tls_registration_py PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
 )
-
-if(WIN32)
-    add_custom_command(
-        TARGET core_py
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:core_py>
-                "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        COMMAND_EXPAND_LISTS
-    )
-    
-    add_custom_command(
-        TARGET lidar_odometry_py
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:lidar_odometry_py>
-                "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        COMMAND_EXPAND_LISTS
-    )
-    
-    add_custom_command(
-        TARGET multi_view_tls_registration_py
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:multi_view_tls_registration_py>
-                "${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        COMMAND_EXPAND_LISTS
-    )
-endif()
-

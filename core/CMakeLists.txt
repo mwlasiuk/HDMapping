@@ -68,6 +68,8 @@ function(add_core_target target_name with_gui)
             ${THIRDPARTY_DIRECTORY}/freeglut/include
             ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
         )
+
+        target_link_libraries(${target_name} PUBLIC glad)
     endif()
 endfunction()
 

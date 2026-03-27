@@ -28,21 +28,11 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/imgui
           ${THIRDPARTY_DIRECTORY}/imgui/backends
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${FREEGLUT_INCLUDE_DIR}
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
           ${LASZIP_INCLUDE_DIR}/LASzip/include)
-
-if(WIN32)
-  add_custom_command(
-    TARGET precision_forestry_tools
-    POST_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:precision_forestry_tools>
-      $<TARGET_FILE_DIR:precision_forestry_tools>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(precision_forestry_tools PRIVATE /bigobj)

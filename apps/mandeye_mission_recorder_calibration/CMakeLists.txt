@@ -30,7 +30,7 @@ target_include_directories(
   ${THIRDPARTY_DIRECTORY}/imgui
   ${THIRDPARTY_DIRECTORY}/imgui/backends
   ${THIRDPARTY_DIRECTORY}/ImGuizmo
-  ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+  ${THIRDPARTY_DIRECTORY}/glad/include
   ${FREEGLUT_INCLUDE_DIR}
   ${THIRDPARTY_DIRECTORY}/json/include
   ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
@@ -53,16 +53,6 @@ target_link_libraries(
   ${CORE_LIBRARIES}
   ${GUI_LIBRARIES}
   ${PLATFORM_MISCELLANEOUS_LIBS})
-
-if(WIN32)
-  add_custom_command(
-    TARGET mandeye_mission_recorder_calibration
-    POST_BUILD
-    COMMAND
-    ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:mandeye_mission_recorder_calibration>
-    $<TARGET_FILE_DIR:mandeye_mission_recorder_calibration>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(mandeye_mission_recorder_calibration PRIVATE /bigobj)

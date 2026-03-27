@@ -1,4 +1,3 @@
-
 #include <GL/freeglut.h>
 
 #include "imgui.h"

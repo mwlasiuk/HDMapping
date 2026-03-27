@@ -36,7 +36,7 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/imgui
           ${THIRDPARTY_DIRECTORY}/imgui/backends
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${FREEGLUT_INCLUDE_DIR}
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
@@ -51,7 +51,6 @@ target_link_libraries(
           unordered_dense::unordered_dense
           spdlog::spdlog
           UTL::include
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
           ${FREEGLUT_LIBRARY}
           ${OPENGL_gl_LIBRARY}
           OpenGL::GLU
@@ -59,16 +58,6 @@ target_link_libraries(
           ${PLATFORM_MISCELLANEOUS_LIBS}
           ${CORE_LIBRARIES}
           ${GUI_LIBRARIES})
-
-if(WIN32)
-  add_custom_command(
-    TARGET lidar_odometry_step_1
-    POST_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:lidar_odometry_step_1>
-      $<TARGET_FILE_DIR:lidar_odometry_step_1>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(lidar_odometry_step_1 PRIVATE /bigobj)
@@ -94,7 +83,7 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/imgui
           ${THIRDPARTY_DIRECTORY}/imgui/backends
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${FREEGLUT_INCLUDE_DIR}
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
@@ -109,7 +98,6 @@ target_link_libraries(
           unordered_dense::unordered_dense
           spdlog::spdlog
           UTL::include
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
           ${FREEGLUT_LIBRARY}
           ${OPENGL_gl_LIBRARY}
           OpenGL::GLU
@@ -117,16 +105,6 @@ target_link_libraries(
           ${PLATFORM_MISCELLANEOUS_LIBS}
           ${CORE_LIBRARIES}
           ${GUI_LIBRARIES})
-
-if(WIN32)
-  add_custom_command(
-    TARGET drag_folder_with_mandeye_data_and_drop_here-precision_forestry
-    POST_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:drag_folder_with_mandeye_data_and_drop_here-precision_forestry>
-      $<TARGET_FILE_DIR:drag_folder_with_mandeye_data_and_drop_here-precision_forestry>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(drag_folder_with_mandeye_data_and_drop_here-precision_forestry PRIVATE /bigobj)

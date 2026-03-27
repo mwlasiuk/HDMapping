@@ -100,3 +100,45 @@ if(WIN32)
     )
 
 endif()
+
+if(WIN32)
+    # Ensure the global bin directory exists
+    file(MAKE_DIRECTORY "${OUTPUT_BIN_DIRECTORY}")
+
+    # Define the copy rules for the DLLs
+    add_custom_command(
+        OUTPUT "${OUTPUT_BIN_DIRECTORY}/proj_9_3.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                "${PROJ_ROOT}/bin/proj_9_3.dll" 
+                "${OUTPUT_BIN_DIRECTORY}/proj_9_3.dll"
+        DEPENDS "${PROJ_ROOT}/bin/proj_9_3.dll"
+        COMMENT "Copying PROJ DLL to output directory"
+    )
+
+    add_custom_command(
+        OUTPUT "${OUTPUT_BIN_DIRECTORY}/z.dll"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                "${PROJ_ROOT}/bin/z.dll" 
+                "${OUTPUT_BIN_DIRECTORY}/z.dll"
+        DEPENDS "${PROJ_ROOT}/bin/z.dll"
+        COMMENT "Copying ZLIB DLL to output directory"
+    )
+
+    # VERY IMPORTANT: PROJ needs its database to do actual coordinate transforms
+    add_custom_command(
+        OUTPUT "${OUTPUT_BIN_DIRECTORY}/proj.db"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+                "${PROJ_DB}" 
+                "${OUTPUT_BIN_DIRECTORY}/proj.db"
+        DEPENDS "${PROJ_DB}"
+        COMMENT "Copying PROJ database to output directory"
+    )
+
+    # Create the trigger target
+    add_custom_target(copy_proj_binaries ALL 
+        DEPENDS 
+            "${OUTPUT_BIN_DIRECTORY}/proj_9_3.dll" 
+            "${OUTPUT_BIN_DIRECTORY}/z.dll"
+            "${OUTPUT_BIN_DIRECTORY}/proj.db"
+    )
+endif()

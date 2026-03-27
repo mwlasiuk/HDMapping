@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include <GL/freeglut.h>
 
 #include <imgui.h>
@@ -34,6 +32,7 @@
 
 #include <laszip/laszip_api.h>
 
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -803,33 +802,6 @@ void pose_graph_slam_gui()
             // spdlog::info("mean uncertainty impact: " << mui << " rms_initial: " << rms_initial << " rms_final: " << rms_final <<
             // std::endl;
         }
-
-#if WITH_GTSAM
-        if (ImGui::Button("Optimize with GTSAM"))
-        {
-            ImGui::Separator();
-            ImGui::Text("With GTSAM:");
-            tls_registration.pose_graph_slam.ndt_bucket_size[0] = tls_registration.ndt.bucket_size[0];
-            tls_registration.pose_graph_slam.ndt_bucket_size[1] = tls_registration.ndt.bucket_size[1];
-            tls_registration.pose_graph_slam.ndt_bucket_size[2] = tls_registration.ndt.bucket_size[2];
-            double rms_initial = 0.0;
-            double rms_final = 0.0;
-            double mui = 0.0;
-            tls_registration.pose_graph_slam.optimize_with_GTSAM(session.point_clouds_container);
-            // spdlog::info("mean uncertainty impact: " << mui << " rms_initial: " << rms_initial << " rms_final: " << rms_final <<
-            // std::endl;
-        }
-#endif
-
-#if WITH_MANIF
-        ImGui::Separator();
-        ImGui::Text("With MANIF:");
-        if (ImGui::Button("Optimize with manif (a small header-only library for Lie theory)"))
-        {
-            tls_registration.pose_graph_slam.optimize_with_manif(session.point_clouds_container);
-            spdlog::info("Optimize with manif (a small header-only library for Lie theory) DONE" << std::endl;
-        }
-#endif
     }
 
     ImGui::End();

@@ -31,7 +31,7 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/imgui
           ${THIRDPARTY_DIRECTORY}/imgui/backends
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${FREEGLUT_INCLUDE_DIR}
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
@@ -42,7 +42,6 @@ target_include_directories(
 
   target_link_libraries(
           multi_view_tls_registration_step_2
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
           PRIVATE ${FREEGLUT_LIBRARY}
           unordered_dense::unordered_dense
           spdlog::spdlog
@@ -53,17 +52,6 @@ target_include_directories(
           ${CORE_LIBRARIES}
           ${GUI_LIBRARIES}
           PROJ::proj)
-
-if(WIN32)
-  add_custom_command(
-    TARGET multi_view_tls_registration_step_2
-    POST_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy
-      $<TARGET_RUNTIME_DLLS:multi_view_tls_registration_step_2>
-      $<TARGET_FILE_DIR:multi_view_tls_registration_step_2>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(multi_view_tls_registration_step_2 PRIVATE /bigobj)

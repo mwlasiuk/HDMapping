@@ -1,6 +1,8 @@
 #include <cmath>
 #include <filesystem>
 
+#include <GL/freeglut.h>
+
 #include <imgui.h>
 #include <imgui_impl_glut.h>
 #include <imgui_impl_opengl2.h>
@@ -8,9 +10,6 @@
 
 #include <ImGuizmo.h>
 
-// #define GLEW_STATIC
-// #include <GL/glew.h>
-#include <GL/freeglut.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <nlohmann/json.hpp>

@@ -4,7 +4,7 @@
 #include <pch/pch.h>
 
 // clang-format off
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GL/freeglut.h>
 // clang-format on
 
@@ -466,6 +466,12 @@ bool initGL(int* argc, char** argv, const std::string& winTitle, void (*display)
     glutInitWindowSize(window_width, window_height);
     if (glutCreateWindow(winTitle.c_str()) <= 0)
         return false; // window creation failed
+
+    if (!gladLoadGL())
+    {
+        std::cerr << "GLAD init failed" << std::endl;
+        return false;
+    }
 
 #ifdef _WIN32
     hwnd = FindWindow(NULL, winTitle.c_str()); // The window title must match exactly

@@ -33,14 +33,13 @@ target_include_directories(
           ${THIRDPARTY_DIRECTORY}/ImGuizmo
           ${THIRDPARTY_DIRECTORY}/json/include
           ${THIRDPARTY_DIRECTORY}/portable-file-dialogs-master
-          ${THIRDPARTY_DIRECTORY}/glew-cmake/include
+          ${THIRDPARTY_DIRECTORY}/glad/include
           ${THIRDPARTY_DIRECTORY}/observation_equations/codes
           ${THIRDPARTY_DIRECTORY}/freeglut/include
           ${LASZIP_INCLUDE_DIR}/LASzip/include)
 
 target_link_libraries(
   multi_session_registration_step_3
-  # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
   ${FREEGLUT_LIBRARY}
   ${OPENGL_gl_LIBRARY}
   OpenGL::GLU
@@ -48,17 +47,6 @@ target_link_libraries(
   ${PLATFORM_MISCELLANEOUS_LIBS}
   ${CORE_LIBRARIES}
   ${GUI_LIBRARIES})
-
-if(WIN32)
-  add_custom_command(
-    TARGET multi_session_registration_step_3
-    POST_BUILD
-    COMMAND
-      ${CMAKE_COMMAND} -E copy
-      $<TARGET_RUNTIME_DLLS:multi_session_registration_step_3>
-      $<TARGET_FILE_DIR:multi_session_registration_step_3>
-    COMMAND_EXPAND_LISTS)
-endif()
 
 if (MSVC)
     target_compile_options(multi_session_registration_step_3 PRIVATE /bigobj)

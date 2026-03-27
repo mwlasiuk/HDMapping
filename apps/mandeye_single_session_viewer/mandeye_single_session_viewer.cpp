@@ -1,5 +1,5 @@
 // clang-format off
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GL/freeglut.h>
 // clang-format on
 
@@ -435,7 +435,6 @@ GLuint gl_uUsePose = 0;
 
 GLuint gl_ssboCloudIndex, gl_ssboClouds = 0;
 
-// gl_*** functions related to glew/openGL VBO/VAO
 GLuint gl_compileShader(GLenum type, const char* source)
 {
     GLuint shader = GL_CALL_RET(glCreateShader(type));
@@ -643,13 +642,6 @@ void gl_renderPointCloud()
 
 void gl_init()
 {
-    GLenum err = glewInit();
-    if (err != GLEW_OK)
-    {
-        std::cerr << "GLEW init failed: " << glewGetErrorString(err) << std::endl;
-        return;
-    }
-
     // Compile shaders and create shader program
     gl_shaderProgram = gl_createShaderProgram(pointsVertSource, pointsFragSource);
 

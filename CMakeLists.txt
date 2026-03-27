@@ -465,16 +465,28 @@ add_subdirectory(apps/concatenate_multi_livox)
 
 include(cmake/disable_target_warnings.cmake)
 
-disable_target_warnings(laszip)
-disable_target_warnings(laszip_api)
+if(NOT WIN32)
+    disable_target_warnings(laszip)
+    disable_target_warnings(laszip_api)
+else()
+    disable_target_warnings(laszip3)
+    disable_target_warnings(laszip_api3)
+endif()
+
+
+if(NOT WIN32)
+    disable_target_warnings(tbb)
+    disable_target_warnings(tbbbind_2_5)
+else()
+    disable_target_warnings(tbb)
+endif()
+
 disable_target_warnings(freeglut)
 disable_target_warnings(freeglut_static)
 disable_target_warnings(libglew_static)
 disable_target_warnings(libglew_shared)
 disable_target_warnings(spdlog)
 disable_target_warnings(vqf)
-disable_target_warnings(tbb)
-disable_target_warnings(tbbbind_2_5)
 disable_target_warnings(Fusion)
 
 # CPack configuration

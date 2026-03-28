@@ -464,6 +464,42 @@ add_subdirectory(apps/livox_mid_360_intrinsic_calibration)
 add_subdirectory(apps/single_session_manual_coloring)
 add_subdirectory(apps/concatenate_multi_livox)
 
+# NOTE(m.wlasiuk) : disable warnings for third party libraries so they do not pollute build logs
+
+###
+### DISABLE WARNINGS FOR THIRDPARTY CODE - START
+###
+
+include(cmake/disable_target_warnings.cmake)
+
+if(NOT WIN32)
+    disable_target_warnings(laszip)
+    disable_target_warnings(laszip_api)
+else()
+    disable_target_warnings(laszip3)
+    disable_target_warnings(laszip_api3)
+endif()
+
+
+if(NOT WIN32)
+    disable_target_warnings(tbb)
+    disable_target_warnings(tbbbind_2_5)
+else()
+    disable_target_warnings(tbb)
+endif()
+
+disable_target_warnings(freeglut)
+disable_target_warnings(freeglut_static)
+disable_target_warnings(libglew_static)
+disable_target_warnings(libglew_shared)
+disable_target_warnings(spdlog)
+disable_target_warnings(vqf)
+disable_target_warnings(Fusion)
+
+###
+### DISABLE WARNINGS FOR THIRDPARTY CODE - END
+###
+
 # CPack configuration
 set(CPACK_PACKAGE_NAME "hd_mapping")
 set(CPACK_PACKAGE_VERSION "${HDMAPPING_VERSION_MAJOR}.${HDMAPPING_VERSION_MINOR}.${HDMAPPING_VERSION_PATCH}")

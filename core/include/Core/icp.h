@@ -29,21 +29,22 @@ public:
         uint64_t index_begin_inclusive;
         uint64_t index_end_exclusive;
     };
+
     std::vector<Job> get_jobs(uint64_t size, int num_threads = 8);
 
     ICP()
+        : search_radius(0.1)
+        , number_of_threads(std::thread::hardware_concurrency())
+        , number_of_iterations(6)
+        , is_adaptive_robust_kernel(false)
+        , is_ballanced_horizontal_vs_vertical(true)
+        , barron_c(1.0)
     {
-        search_radius = 0.1;
-        number_of_threads = std::thread::hardware_concurrency();
-        number_of_iterations = 6;
-        is_adaptive_robust_kernel = false;
-        is_ballanced_horizontal_vs_vertical = true;
-        barron_c = 1.0;
-    };
+    }
+
     ~ICP()
     {
-        ;
-    };
+    }
 
     bool optimize_source_to_target_wc(PointClouds& point_clouds_container, bool fix_first_node);
     bool compute_uncertainty(PointClouds& point_clouds_container);
@@ -76,6 +77,7 @@ public:
     compute_covariance_matrices_point_to_point_source_to_target_source_to_target_lie_algebra_right_jacobian(
         PointClouds& point_clouds_container);
 
+    // TODO(mwlasiuk) : private
     float search_radius;
     int number_of_threads;
     int number_of_iterations;

@@ -22,7 +22,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
        
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., Wybrane odwzorowania kartograficzne, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 

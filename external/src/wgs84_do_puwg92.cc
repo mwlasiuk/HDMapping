@@ -20,7 +20,7 @@ Uwagi: Oprogramowanie darmowe. Dozwolone jest wykorzystanie i modyfikacja
        doi:10.1117/12.2001354
        
 Literatura:
-       Uriasz, J., “Wybrane odwzorowania kartograficzne”, Akademia Morska w Szczecinie,
+       Uriasz, J., Wybrane odwzorowania kartograficzne, Akademia Morska w Szczecinie,
        http://uriasz.am.szczecin.pl/naw_bezp/odwzorowania.html
 */
 
@@ -44,10 +44,10 @@ Zwracana wartosc:
 */
     {
     // Parametry elipsoidy GRS-80
-    double e=0.0818191910428;  	//pierwszymimo¶ród elipsoidy
-    double R0=6367449.14577; 		//promieñ sfery Lagrange.a
-    double Snorm=2.0E-6;   		//parametr normuj±cy
-    double xo=5760000.0; 		//parametr centruj±cy
+    double e=0.0818191910428;  	//pierwszymimosrod elipsoidy
+    double R0=6367449.14577; 		//promien sfery Lagrange.a
+    double Snorm=2.0E-6;   		//parametr normujacy
+    double xo=5760000.0; 		//parametr centrujacy
     
     //Wspolczynniki wielomianu
     double a0=5765181.11148097;
@@ -58,8 +58,8 @@ Zwracana wartosc:
     double a5=-0.00111138;
     double a6=-0.00010504;
     
-    // Parametry odwzorowania Gaussa-Kruegera dla uk³adu PUWG92
-    double L0_stopnie=19.0; 		//Pocz±tek uk³adu wsp. PUWG92 (d³ugo¶æ)
+    // Parametry odwzorowania Gaussa-Kruegera dla ukladu PUWG92
+    double L0_stopnie=19.0; 		//Poczatek ukladu wsp. PUWG92 (dlugosc)
     double m0=0.9993;
     double x0=-5300000.0;
     double y0= 500000.0;
@@ -81,7 +81,7 @@ Zwracana wartosc:
     if ((dL<dLmin) || (dL>dLmax))
           return 2;
           
-    //etap I - elipsoida na kulê
+    //etap I - elipsoida na kule
     double U=1.0-e*sin(B);
     double V=1.0+e*sin(B);
     double K=pow((U/V),(e/2.0));
@@ -97,14 +97,14 @@ Zwracana wartosc:
     double XMERC=R0*atan(p/q);
     double YMERC=0.5*R0*log(r/s);
 
-    //etap III - walec na p³aszczyznê
+    //etap III - walec na plaszczyzne
     complex<double> Z((XMERC-xo)*Snorm,YMERC*Snorm);
     complex<double> Zgk;
     Zgk=a0+Z*(a1+Z*(a2+Z*(a3+Z*(a4+Z*(a5+Z*a6)))));
     double Xgk=Zgk.real();
     double Ygk=Zgk.imag();
     
-    //Przej¶cie do uk³adu aplikacyjnego
+    //Przejscie do ukladu aplikacyjnego
     *Xpuwg=m0*Xgk+x0;
     *Ypuwg=m0*Ygk+y0;
     
@@ -124,14 +124,14 @@ Zwracana wartosc:
     0 - konwersja powiodla sie
 */  
 	{
-	double L0_stopnie=19.0; 		//Pocz±tek uk³adu wsp. PUWG92 (d³ugo¶æ)
+	double L0_stopnie=19.0; 		//Poczatek ukladu wsp. PUWG92 (dlugosc)
 	double m0=0.9993;
     double x0=-5300000.0;
     double y0= 500000.0;
     
-    double R0=6367449.14577; 	//promieñ sfery Lagrange.a
-    double Snorm=2.0E-6;   		//parametr normuj±cy
-    double xo_prim=5765181.11148097; 		//parametr centruj±cy
+    double R0=6367449.14577; 	//promien sfery Lagrange.a
+    double Snorm=2.0E-6;   		//parametr normujacy
+    double xo_prim=5765181.11148097; 		//parametr centrujacy
     
     // Wspolczynniki wielomianu
     double b0=5760000;

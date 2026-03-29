@@ -14,6 +14,7 @@
 #include "lidar_odometry_utils.h"
 
 #include <Core/export_laz.h>
+#include <Core/hash_utils.h>
 #include <Core/pfd_wrapper.hpp>
 #include <Core/registration_plane_feature.h>
 #include <Core/session.h>
@@ -272,20 +273,6 @@ std::string formatCompletionTime(double remainingSeconds)
     return std::string(timeStr);
 }
 
-int get_index_3d(const set<int>& s, int k)
-{
-    int index = 0;
-    for (auto u : s)
-    {
-        if (u == k)
-        {
-            return index;
-        }
-        index++;
-    }
-    return -1;
-}
-
 void find_best_stretch(
     std::vector<Point3Di> points, std::vector<double> timestamps, std::vector<Eigen::Affine3d> poses, std::string fn1, std::string fn2)
 {
@@ -317,7 +304,7 @@ void find_best_stretch(
     std::vector<Point3Di> points_reindexed = points;
     for (size_t i = 0; i < points_reindexed.size(); i++)
     {
-        points_reindexed[i].index_pose = get_index_3d(indexes, points[i].index_pose);
+        points_reindexed[i].index_pose = get_index_in_set(indexes, points[i].index_pose);
     }
     ///
     std::vector<Eigen::Affine3d> best_trajectory = trajectory;

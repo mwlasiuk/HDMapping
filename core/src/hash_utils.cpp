@@ -49,3 +49,15 @@ uint64_t get_rgd_index_3d(const Eigen::Vector3d& p, const Eigen::Vector3d& b)
 
     return get_index_3d(x, y, z);
 }
+
+int32_t get_index_in_set(const std::set<int32_t>& set, const int32_t query)
+{
+    auto it = set.find(query);
+
+    if (it == set.end())
+    {
+        return -1;
+    }
+
+    return std::distance(set.begin(), it);
+}

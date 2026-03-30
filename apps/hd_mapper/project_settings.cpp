@@ -1,6 +1,6 @@
 #include <pch/pch.h>
 
-#include <CoreHDMapping/project_settings.h>
+#include "project_settings.h"
 
 #include <GL/freeglut.h>
 #include <nlohmann/json.hpp>

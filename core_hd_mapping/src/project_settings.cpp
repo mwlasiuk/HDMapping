@@ -95,27 +95,6 @@ void ProjectSettings::imgui(
         odo_with_gnss_fusion.update_shift(common_data.shift_x, common_data.shift_y, common_data);
     }
 
-    /*if (ImGui::Button("set project main folder")) {
-            static std::shared_ptr<pfd::select_folder> folder;
-            std::string folder_name = "";
-            ImGui::PushItemFlag(ImGuiItemFlags_Disabled, (bool)folder);
-            const auto t = [&]() {
-                    auto sel = pfd::select_folder("Choose folder", "C:\\").result();
-                    folder_name = sel;
-                    std::cout << "project_main_folder: '" << folder_name << "'" << std::endl;
-            };
-            std::thread t1(t);
-            t1.join();
-
-            if (folder_name.size() > 0) {
-                    project_main_folder = folder_name;
-            }
-    }
-    if (project_main_folder.size() > 0) {
-            ImGui::SameLine();
-            ImGui::Text(std::string("project_main_folder: " + project_main_folder).c_str() );
-    }*/
-
     if (ImGui::Button("add trajectory"))
     {
         std::string input_file_name;
@@ -128,8 +107,6 @@ void ProjectSettings::imgui(
 
         if (input_file_name.size() > 0)
         {
-            // create motion model trajectory
-
             add_trajectory(
                 input_file_name, input_file_name_mm, float(rand() % 255) / 256.0, float(rand() % 255) / 256.0, float(rand() % 255) / 256.0);
         }
@@ -429,13 +406,6 @@ void ProjectSettings::render(const std::vector<ROIwithConstraints>& rois_with_co
 
 void ProjectSettings::pose_graph_slam(std::vector<ROIwithConstraints>& rois_with_constraints)
 {
-    /*for (auto& trj : trajectories) {
-            for (auto& node : trj.fused_trajectory) {
-                    node.m_pose(2, 3) += 10;
-                    std::cout << node.index_to_gnss << " ";
-            }
-    }*/
-
     std::vector<Eigen::Affine3d> constraints;
 
     for (const auto& rwcs : rois_with_constraints)
@@ -479,7 +449,6 @@ std::vector<BetweenNode> ProjectSettings::find_between_nodes(std::vector<Node>& 
 {
     std::vector<BetweenNode> between_nodes;
     double dist_along = 0.0f;
-    // double dist_along_gnss = 0.0f;
 
     BetweenNode node_outer;
     node_outer.node_outer.index_to_lidar_odometry_odo = 0;

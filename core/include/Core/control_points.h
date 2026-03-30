@@ -4,9 +4,6 @@
 
 #include <string>
 #include <vector>
-#if WITH_GUI == 1
-#include <GL/freeglut.h>
-#endif
 
 struct ControlPoint
 {
@@ -27,32 +24,22 @@ struct ControlPoint
 class ControlPoints
 {
 public:
-    ControlPoints()
-    {
-        ;
-    };
-    ~ControlPoints()
-    {
-        ;
-    };
+    ControlPoints() = default;
+    ~ControlPoints() = default;
 
     bool is_imgui = false;
     std::vector<ControlPoint> cps;
+    
 #if WITH_GUI == 1
     bool picking_mode = false;
-    // int picking_mode_index_to_node_inner = -1;
-    // int picking_mode_index_to_node_outer = -1;
     bool draw_uncertainty = false;
     int index_picked_point = -1;
     bool track_pose_with_camera = true;
 
     int index_pose = 0;
 
-    // bool found_picked = false;
-    // ControlPoint picked_control_point;
-
-    void imgui(PointClouds& point_clouds_container, Eigen::Vector3f& rotation_center);
+    void imgui(PointClouds& point_clouds_container, const Eigen::Vector3f& rotation_center);
     void render(const PointClouds& point_clouds_container, bool show_pc);
-    void draw_ellipse(const Eigen::Matrix3d& covar, Eigen::Vector3d& mean, Eigen::Vector3f color, float nstd = 1);
+    void draw_ellipse(const Eigen::Matrix3d& covar, const Eigen::Vector3d& mean, const Eigen::Vector3f& color, float nstd = 1);
 #endif
 };

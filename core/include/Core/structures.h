@@ -172,43 +172,6 @@ bool save_vector_data(const std::string& file_name, const std::vector<T>& out)
     }
 }
 
-/*template<typename T>
-inline bool load_vector_data(const std::string& file_name, std::vector<T>& vector_data) {
-        std::basic_ifstream<char> vd_str(file_name, std::ios::binary);
-        if (!vd_str.good()) {
-                return false;
-        }
-        std::vector<char> data((std::istreambuf_iterator<char>(vd_str)), std::istreambuf_iterator<char>());
-        std::vector<T> v(data.size() / sizeof(T));
-        memcpy(v.data(), data.data(), data.size());
-        vector_data = v;
-        return true;
-}*/
-
-/*template<typename T>
-bool load_vector_data(const std::string& file_name, std::vector<T>& out)
-{
-        //static_assert(std::is_trivially_copyable_v<T>,
-        //	"T must be trivially copyable");
-
-        std::ifstream file(file_name, std::ios::binary | std::ios::ate);
-        if (!file)
-                return false;
-
-        const std::streamsize size = file.tellg();
-        if (size < 0 || size % sizeof(T) != 0)
-                return false;
-
-        const size_t count = size / sizeof(T);
-        out.resize(count);
-
-        file.seekg(0, std::ios::beg);
-        if (!file.read(reinterpret_cast<char*>(out.data()), size))
-                return false;
-
-        return true;
-}*/
-
 template<typename T>
 bool load_vector_data(const std::string& file_name, std::vector<T>& out)
 {
@@ -264,21 +227,25 @@ struct LaserBeam
 
 struct Plane
 {
-    Plane()
-    {
-        a = b = c = d = 0.0;
-    }
-    double a;
-    double b;
-    double c;
-    double d;
+    double a = {};
+    double b = {};
+    double c = {};
+    double d = {};
 
-    Plane(Eigen::Vector3d p, Eigen::Vector3d nv)
+    Plane()
+        : a(0.0)
+        , b(0.0)
+        , c(0.0)
+        , d(0.0)
     {
-        a = nv.x();
-        b = nv.y();
-        c = nv.z();
-        d = -a * p.x() - b * p.y() - c * p.z();
+    }
+
+    Plane(const Eigen::Vector3d& p, const Eigen::Vector3d& nv)
+        : a(nv.x())
+        , b(nv.y())
+        , c(nv.z())
+        , d(-a * p.x() - b * p.y() - c * p.z())
+    {
     }
 };
 

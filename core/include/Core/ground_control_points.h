@@ -5,10 +5,6 @@
 #include <string>
 #include <vector>
 
-#if WITH_GUI == 1
-#include <GL/freeglut.h>
-#endif
-
 struct GroundControlPoint
 {
     char name[64];
@@ -26,14 +22,8 @@ struct GroundControlPoint
 class GroundControlPoints
 {
 public:
-    GroundControlPoints()
-    {
-        ;
-    };
-    ~GroundControlPoints()
-    {
-        ;
-    };
+    GroundControlPoints() = default;
+    ~GroundControlPoints() = default;
 
     std::vector<GroundControlPoint> gpcs;
     double default_lidar_height_above_ground = 0.15;
@@ -46,6 +36,6 @@ public:
 
     void imgui(PointClouds& point_clouds_container);
     void render(const PointClouds& point_clouds_container);
-    void draw_ellipse(const Eigen::Matrix3d& covar, Eigen::Vector3d& mean, Eigen::Vector3f color, float nstd = 1);
+    void draw_ellipse(const Eigen::Matrix3d& covar, const Eigen::Vector3d& mean, const Eigen::Vector3f& color, float nstd = 1);
 #endif
 };

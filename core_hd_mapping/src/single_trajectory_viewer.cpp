@@ -159,20 +159,21 @@ void SingleTrajectoryViewer::imgui(const CommonData& common_data)
 void SingleTrajectoryViewer::render()
 {
     glColor3d(0.4, 0, 1);
+
     glBegin(GL_POINTS);
-    for (size_t i = 0; i < trajectory_container.fused_trajectory.size(); i++)
+    for (const auto& pose_entry : trajectory_container.fused_trajectory)
     {
-        glVertex3f(
-            trajectory_container.fused_trajectory[i].m_pose(0, 3),
-            trajectory_container.fused_trajectory[i].m_pose(1, 3),
-            trajectory_container.fused_trajectory[i].m_pose(2, 3));
+        const auto& t = pose_entry.m_pose.translation();
+        glVertex3f(t.x(), t.y(), t.z());
     }
     glEnd();
 
     glBegin(GL_POINTS);
     for (const auto& p : points)
     {
-        glColor3f((float(p.intensity) + 100) / 256.0, (float(p.intensity) + 100) / 256.0, (float(p.intensity) + 100) / 256.0);
+        const auto intensity_scaled = (float(p.intensity) + 100.0f) / 256.0f;
+
+        glColor3f(intensity_scaled, intensity_scaled, intensity_scaled);
         glVertex3f(p.x, p.y, p.z);
     }
     glEnd();
@@ -205,17 +206,12 @@ void SingleTrajectoryViewer::render()
 
 bool inside_roi(const Eigen::Affine3d& m_pose, const Eigen::Vector3d& roi, const float& roi_size)
 {
-    if (m_pose.translation().x() >= (roi.x() - roi_size) && m_pose.translation().x() <= (roi.x() + roi_size))
-    {
-        if (m_pose.translation().y() >= (roi.y() - roi_size) && m_pose.translation().y() <= (roi.y() + roi_size))
-        {
-            return true;
-        }
-    }
-    return false;
+    const auto& t = m_pose.translation();
+
+    return (t.x() >= roi.x() - roi_size && t.x() <= roi.x() + roi_size) && (t.y() >= roi.y() - roi_size && t.y() <= roi.y() + roi_size);
 }
 
-std::vector<PointCloudWithPose> SingleTrajectoryViewer::get_point_cloud_for_roi(Eigen::Vector3d roi, float roi_size)
+std::vector<PointCloudWithPose> SingleTrajectoryViewer::get_point_cloud_for_roi(const Eigen::Vector3d& roi, float roi_size)
 {
     std::vector<PointCloudWithPose> pcs;
 

@@ -1,11 +1,6 @@
 #pragma once
 
 #if WITH_GUI == 1
-
-#include <GL/freeglut.h>
-
-#include <imgui.h>
-
 #include <Core/gnss.h>
 #include <Core/observation_picking.h>
 #include <Core/point_clouds.h>

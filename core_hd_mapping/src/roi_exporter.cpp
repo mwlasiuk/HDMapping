@@ -113,11 +113,6 @@ void RoiExporter::imgui(CommonData& common_data, const ProjectSettings& project_
     ImGui::Begin("ROI exporter");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-    // if (ImGui::Button("reset view (angles)")) {
-    //    common_data.rotate_x = 0.0;
-    //    common_data.rotate_y = 0.0;
-    //}
-    // ImGui::SameLine();
     ImGui::Checkbox("ROI::is_ortho", &common_data.is_ortho);
 
     if (common_data.is_ortho)
@@ -225,15 +220,6 @@ void RoiExporter::imgui(CommonData& common_data, const ProjectSettings& project_
                 roi_point_clouds.insert(roi_point_clouds.end(), roi_point_clouds_per_job[i].begin(), roi_point_clouds_per_job[i].end());
             }
         }
-
-        /*for (auto t : project_setings.trajectories) {
-            SingleTrajectoryViewer tv;
-            tv.load_fused_trajectory(t.trajectory_file);
-            auto point_clouds = tv.get_point_cloud_for_roi(common_data.roi, common_data.roi_size);
-            for (const auto& pp : point_clouds) {
-                 roi_point_clouds.push_back(pp);
-            }
-        }*/
     }
     ImGui::SameLine();
     ImGui::SliderInt("roi threads", &num_threads, 1, 128);
@@ -293,56 +279,60 @@ void RoiExporter::imgui(CommonData& common_data, const ProjectSettings& project_
 
 void RoiExporter::render(const CommonData& common_data)
 {
+    const auto& r = common_data.roi;
+
+    const auto s = common_data.roi_size;
+
+    const auto x0 = r.x() - s;
+    const auto x1 = r.x() + s;
+    const auto y0 = r.y() - s;
+    const auto y1 = r.y() + s;
+    const auto z = r.z();
+
     glColor3f(0, 0, 0);
     glBegin(GL_LINE_STRIP);
-    glVertex3f(common_data.roi.x() - common_data.roi_size, common_data.roi.y() - common_data.roi_size, common_data.roi.z());
-    glVertex3f(common_data.roi.x() + common_data.roi_size, common_data.roi.y() - common_data.roi_size, common_data.roi.z());
-    glVertex3f(common_data.roi.x() + common_data.roi_size, common_data.roi.y() + common_data.roi_size, common_data.roi.z());
-    glVertex3f(common_data.roi.x() - common_data.roi_size, common_data.roi.y() + common_data.roi_size, common_data.roi.z());
-    glVertex3f(common_data.roi.x() - common_data.roi_size, common_data.roi.y() - common_data.roi_size, common_data.roi.z());
+    glVertex3f(x0, y0, z);
+    glVertex3f(x1, y0, z);
+    glVertex3f(x1, y1, z);
+    glVertex3f(x0, y1, z);
+    glVertex3f(x0, y0, z);
     glEnd();
 
     for (const auto& pp : roi_point_clouds)
     {
-        if (pp.visible)
+        if (!pp.visible)
         {
-            glPointSize(pp.point_size);
-            glBegin(GL_POINTS);
-            for (size_t i = 0; i < pp.points_global.size(); i += decimation)
-            {
-                const auto& p = pp.points_global[i];
-                glColor3f((float(p.intensity) + 100) / 256.0, (float(p.intensity) + 100) / 256.0, (float(p.intensity) + 100) / 256.0);
-                glVertex3f(p.x, p.y, p.z);
-            }
-            glPointSize(1);
-            glEnd();
+            continue;
         }
+
+        glPointSize(pp.point_size);
+        glBegin(GL_POINTS);
+
+        for (size_t i = 0; i < pp.points_global.size(); i += decimation)
+        {
+            const auto& p = pp.points_global[i];
+
+            const auto intensity_scaled = (float(p.intensity) + 100.0f) / 256.0f;
+
+            glColor3f(intensity_scaled, intensity_scaled, intensity_scaled);
+            glVertex3f(p.x, p.y, p.z);
+        }
+
+        glEnd();
+        glPointSize(1);
     }
 
-    for (size_t i = 0; i < rois_with_constraints.size(); i++)
+    for (const auto& roi : rois_with_constraints)
     {
-        for (size_t j = 0; j < rois_with_constraints[i].constraints.size(); j++)
+        for (const auto& c : roi.constraints)
         {
-            // glBegin(GL_LINES);
-            Eigen::Affine3d& m = rois_with_constraints[i].constraints[j].m_pose;
-            /*float scale = 10;
-                glColor3f(1, 0, 0);
-                glVertex3f(m(0, 3), m(1, 3), m(2, 3));
-                glVertex3f(m(0, 3) + m(0,0) * scale, m(1, 3) + m(1,0) * scale, m(2, 3) + m(2,0) * scale);
-
-                glColor3f(0, 1, 0);
-                glVertex3f(m(0, 3), m(1, 3), m(2, 3));
-                glVertex3f(m(0, 3) + m(0, 1) * scale, m(1, 3) + m(1, 1) * scale, m(2, 3) + m(2, 1) * scale);
-
-                glColor3f(0, 0, 1);
-                glVertex3f(m(0, 3), m(1, 3), m(2, 3));
-                glVertex3f(m(0, 3) + m(0, 2) * scale, m(1, 3) + m(1, 2) * scale, m(2, 3) + m(2, 2) * scale);
-            glEnd();*/
+            const auto& m = c.m_pose;
+            const auto& t = m.translation();
 
             glColor3f(0, 0, 0);
             glPointSize(10);
             glBegin(GL_POINTS);
-            glVertex3f(m(0, 3), m(1, 3), m(2, 3));
+            glVertex3f(t.x(), t.y(), t.z());
             glEnd();
             glPointSize(1);
         }

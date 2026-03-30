@@ -5,6 +5,7 @@
 #include <python-scripts/point-to-point-metrics/point_to_point_source_to_target_tait_bryan_wc_jacobian.h>
 
 #if WITH_GUI == 1
+#include <GL/freeglut.h>
 #include <imgui.h>
 #include <imgui_impl_glut.h>
 #include <imgui_impl_opengl2.h>
@@ -15,7 +16,7 @@ static constexpr const char* xText = "Longitudinal (forward/backward)";
 static constexpr const char* yText = "Lateral (left/right)";
 static constexpr const char* zText = "Vertical (up/down)";
 
-void ControlPoints::imgui(PointClouds& point_clouds_container, Eigen::Vector3f& rotation_center)
+void ControlPoints::imgui(PointClouds& point_clouds_container, const Eigen::Vector3f& rotation_center)
 {
     if (ImGui::Begin("Control Point", &is_imgui))
     {
@@ -463,7 +464,7 @@ void ControlPoints::render(const PointClouds& point_clouds_container, bool show_
     return;
 }
 
-void ControlPoints::draw_ellipse(const Eigen::Matrix3d& covar, Eigen::Vector3d& mean, Eigen::Vector3f color, float nstd)
+void ControlPoints::draw_ellipse(const Eigen::Matrix3d& covar, const Eigen::Vector3d& mean, const Eigen::Vector3f& color, float nstd)
 {
     Eigen::LLT<Eigen::Matrix<double, 3, 3>> cholSolver(covar);
     Eigen::Matrix3d transform = cholSolver.matrixL();

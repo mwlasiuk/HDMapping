@@ -3,6 +3,10 @@
 #include <Core/point_clouds.h>
 #include <Core/transformations.h>
 
+#if WITH_GUI == 1
+#include <GL/freeglut.h>
+#endif
+
 #include <laszip/laszip_api.h>
 #include <spdlog/spdlog.h>
 

@@ -1,6 +1,9 @@
 #include <pch/pch.h>
 
 #if WITH_GUI == 1
+#include <GL/freeglut.h>
+#include <imgui.h>
+
 #include <Core/export_laz.h>
 #include <Core/gnss.h>
 #include <Core/icp.h>

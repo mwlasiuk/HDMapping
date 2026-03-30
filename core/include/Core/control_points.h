@@ -29,7 +29,7 @@ public:
 
     bool is_imgui = false;
     std::vector<ControlPoint> cps;
-    
+
 #if WITH_GUI == 1
     bool picking_mode = false;
     bool draw_uncertainty = false;

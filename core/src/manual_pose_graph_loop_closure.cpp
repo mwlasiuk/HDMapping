@@ -424,8 +424,8 @@ void ManualPoseGraphLoopClosure::Render(
         {
             if (i >= 0 && i < point_clouds_container.point_clouds.size() && point_clouds_container.point_clouds.size() > 0)
             {
-                //ObservationPicking observation_picking;
-                //point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
+                // ObservationPicking observation_picking;
+                // point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
                 Eigen::Affine3d m_src = point_clouds_container.point_clouds.at(i).m_pose;
 
                 if (render_source_as_red_target_as_blue)
@@ -438,8 +438,7 @@ void ManualPoseGraphLoopClosure::Render(
                 }
                 else
                 {
-                    point_clouds_container.point_clouds.at(i).render(
-                        m_src, 1, 1, point_clouds_container.point_clouds.at(i).render_color);
+                    point_clouds_container.point_clouds.at(i).render(m_src, 1, 1, point_clouds_container.point_clouds.at(i).render_color);
                 }
             }
         }
@@ -448,8 +447,8 @@ void ManualPoseGraphLoopClosure::Render(
         {
             if (i >= 0 && i < point_clouds_container.point_clouds.size() && point_clouds_container.point_clouds.size() > 0)
             {
-                //ObservationPicking observation_picking;
-                //point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
+                // ObservationPicking observation_picking;
+                // point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
                 Eigen::Affine3d m_src = point_clouds_container.point_clouds.at(i).m_pose;
 
                 if (render_source_as_red_target_as_blue)

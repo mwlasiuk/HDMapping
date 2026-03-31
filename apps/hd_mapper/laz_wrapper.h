@@ -7,7 +7,7 @@
 
 #include <ImGuizmo.h>
 
-#include <CoreHDMapping/project_settings.h>
+#include "project_settings.h"
 
 // TODO(mwlasiuk) : cross includes ???
 #include <Core/structures.h>

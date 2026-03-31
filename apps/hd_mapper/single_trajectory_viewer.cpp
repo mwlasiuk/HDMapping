@@ -2,7 +2,8 @@
 
 #include <Core/pfd_wrapper.hpp>
 #include <Core/transformations.h>
-#include <CoreHDMapping/single_trajectory_viewer.h>
+
+#include "single_trajectory_viewer.h"
 
 #include <GL/freeglut.h>
 

@@ -24,6 +24,7 @@ set_property(CACHE HD_CPU_OPTIMIZATION PROPERTY STRINGS AUTO INTEL AMD ARM GENER
 
 # Options to enable / disable specific components
 option(BUILD_WITH_CLI_TOOLS "Build with command line tools" ON)
+option(BUILD_WITH_HD_MAPPER_APPLICATION "Build with hd_mapper tool" OFF)
 option(UTL_PROFILER_DISABLE "Disable UTL profiler (zero overhead when ON)" ON)
 option(BUILD_WITH_BUNDLED_FREEGLUT "Build with bundled FreeGlut" ON)
 option(BUILD_WITH_BUNDLED_GLEW "Build with bundled GLEW" ON)
@@ -200,15 +201,16 @@ add_subdirectory(${THIRDPARTY_DIRECTORY}/vqf/vqf/cpp)
 add_subdirectory(${THIRDPARTY_DIRECTORY}/Fusion/Fusion)
 
 add_subdirectory(core)
-add_subdirectory(core_hd_mapping)
 
-set(CORE_LIBRARIES core core-hd-mapping)
+set(CORE_LIBRARIES core)
 set(GUI_LIBRARIES imgui imguizmo implot)
-
-#add_subdirectory(apps/hd_mapper)
 
 if(BUILD_WITH_CLI_TOOLS)
     add_subdirectory(apps/console_tools)
+endif()
+
+if(BUILD_WITH_HD_MAPPER_APPLICATION)
+    add_subdirectory(apps/hd_mapper)
 endif()
 
 add_subdirectory(apps/lidar_odometry_step_1)    
@@ -239,7 +241,6 @@ else()
     disable_target_warnings(laszip3)
     disable_target_warnings(laszip_api3)
 endif()
-
 
 if(NOT WIN32)
     disable_target_warnings(tbb)

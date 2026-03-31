@@ -2,9 +2,9 @@
 
 #include <Core/pfd_wrapper.hpp>
 
-#include <CoreHDMapping/laz_wrapper.h>
-#include <CoreHDMapping/roi_exporter.h>
-#include <CoreHDMapping/single_trajectory_viewer.h>
+#include "laz_wrapper.h"
+#include "roi_exporter.h"
+#include "single_trajectory_viewer.h"
 
 #include <GL/freeglut.h>
 #include <plycpp.h>

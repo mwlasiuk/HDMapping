@@ -44,7 +44,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 ### Python Bindings
 ```bash
 # Enable Python bindings
-cmake -DCMAKE_BUILD_TYPE=Release -DPYBIND=ON ..
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_PYBIND=ON ..
 ```
 
 ### Complete Configuration Examples
@@ -55,7 +55,7 @@ mkdir build-dev
 cd build-dev
 cmake -DCMAKE_BUILD_TYPE=Debug \
     -DHD_CPU_OPTIMIZATION=AMD \
-    -DPYBIND=ON ..
+    -DBUILD_WITH_PYBIND=ON ..
 cmake --build . --config Debug
 ```
 

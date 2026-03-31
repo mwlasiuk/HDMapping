@@ -7,7 +7,7 @@
 #include <GL/freeglut.h>
 #endif
 
-#include <plycpp.h>
+#include <plycpp/plycpp.h>
 
 #include <laszip/laszip_api.h>
 

@@ -24,9 +24,9 @@ set(CORE_BASE_SOURCES
     src/pose_graph_slam.cpp
     src/registration_plane_feature.cpp
     src/session.cpp
-    # src/utils.cpp # TODO(mwlasiuk) : broken AF ...
-    ${EXTERNAL_LIBRARIES_DIRECTORY}/src/wgs84_do_puwg92.cc
-    ${EXTERNAL_LIBRARIES_DIRECTORY}/src/plycpp.cpp
+   # # src/utils.cpp # TODO(mwlasiuk) : broken AF ...
+   # ${EXTERNAL_LIBRARIES_DIRECTORY}/src/wgs84_do_puwg92.cc
+   # ${EXTERNAL_LIBRARIES_DIRECTORY}/src/plycpp.cpp
 )
 
 set(CORE_GUI_SOURCES
@@ -46,7 +46,7 @@ function(add_core_target target_name with_gui)
 
     add_library(${target_name} STATIC ${SOURCES})
     target_compile_definitions(${target_name} PRIVATE ${DEFINES})
-    target_link_libraries(${target_name} PRIVATE ${PLATFORM_LASZIP_LIB} ${PLATFORM_MISCELLANEOUS_LIBS} spdlog::spdlog vqf Fusion)
+    target_link_libraries(${target_name} PRIVATE ${PLATFORM_LASZIP_LIB} ${PLATFORM_MISCELLANEOUS_LIBS} PROJ::proj spdlog::spdlog vqf Fusion wgs84_do_puwg92 plycpp WGS84toCartesian)
     target_include_directories(${target_name} PRIVATE
         include
         ${EIGEN3_INCLUDE_DIR}
@@ -57,8 +57,6 @@ function(add_core_target target_name with_gui)
         ${THIRDPARTY_DIRECTORY}/vqf/vqf/cpp
         ${THIRDPARTY_DIRECTORY}/Fusion/Fusion
     )
-
-    target_link_libraries(${target_name} PRIVATE PROJ::proj)
 
     if(${with_gui})
         target_include_directories(${target_name} PRIVATE

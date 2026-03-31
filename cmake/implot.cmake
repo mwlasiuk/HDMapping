@@ -2,7 +2,6 @@ include_guard()
 
 set(IMPLOT_LIBRARY_DIRECTORY ${THIRDPARTY_DIRECTORY}/implot)
 
-
 set(IMPLOT_SOURCE_FILES
         ${IMPLOT_LIBRARY_DIRECTORY}/implot.cpp
         ${IMPLOT_LIBRARY_DIRECTORY}/implot_items.cpp

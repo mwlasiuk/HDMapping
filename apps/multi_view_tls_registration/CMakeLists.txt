@@ -42,12 +42,14 @@ target_include_directories(
 
   target_link_libraries(
           multi_view_tls_registration_step_2
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
-          PRIVATE ${FREEGLUT_LIBRARY}
+          PRIVATE 
+          WGS84toCartesian
+          wgs84_do_puwg92
           unordered_dense::unordered_dense
           spdlog::spdlog
-          ${OPENGL_gl_LIBRARY}
           OpenGL::GLU
+          ${FREEGLUT_LIBRARY}
+          ${OPENGL_gl_LIBRARY}
           ${PLATFORM_LASZIP_LIB}
           ${PLATFORM_MISCELLANEOUS_LIBS}
           ${CORE_LIBRARIES}

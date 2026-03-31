@@ -44,8 +44,8 @@
 
 #include <HDMapping/Version.hpp>
 
-#include "WGS84toCartesian.hpp"
-#include "wgs84_do_puwg92.h"
+#include "WGS84toCartesian/WGS84toCartesian.hpp"
+#include "wgs84_do_puwg92/wgs84_do_puwg92.h"
 
 #include <proj.h>
 #ifdef _WIN32

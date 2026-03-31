@@ -25,12 +25,13 @@ set_property(CACHE HD_CPU_OPTIMIZATION PROPERTY STRINGS AUTO INTEL AMD ARM GENER
 # Options to enable / disable specific components
 option(BUILD_WITH_CLI_TOOLS "Build with command line tools" ON)
 option(BUILD_WITH_HD_MAPPER_APPLICATION "Build with hd_mapper tool" OFF)
-option(UTL_PROFILER_DISABLE "Disable UTL profiler (zero overhead when ON)" ON)
+option(BUILD_WITH_QUICK_START_DEMO "Build with quick_start_demo" OFF)
+option(BUILD_WITH_UTL_PROFILER_DISABLED "Disable UTL profiler (zero overhead when ON)" ON)
 option(BUILD_WITH_BUNDLED_FREEGLUT "Build with bundled FreeGlut" ON)
 option(BUILD_WITH_BUNDLED_GLEW "Build with bundled GLEW" ON)
 option(BUILD_WITH_BUNDLED_LIBLASZIP "Build with bundled Lib LASZIP" ON)
 option(BUILD_WITH_BUNDLED_ONETBB "Build with bundled oneTBB" ON)
-option(PYBIND "Enable pybind11 bindings" OFF)
+option(BUILD_WITH_PYBIND "Enable pybind11 bindings" OFF)
 
 # Add definitions for all projects
 add_definitions(-DHDMAPPING_VERSION_MAJOR=${HDMAPPING_VERSION_MAJOR})
@@ -67,6 +68,12 @@ find_package(OpenGL REQUIRED)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# TODO(mwlasiuk) : fix
+# if(WIN32)
+#     set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+#     set(CMAKE_COMPILE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# endif()
 
 # Include cmake configs
 include(cmake/cpu_optimizations.cmake)
@@ -175,8 +182,8 @@ MESSAGE(STATUS "Using bundled spdlog from: ${THIRDPARTY_DIRECTORY}/spdlog")
 add_subdirectory(${THIRDPARTY_DIRECTORY}/UTL)
 MESSAGE(STATUS "Using bundled UTL from: ${THIRDPARTY_DIRECTORY}/UTL")
 
-if(PYBIND)
-    message(STATUS "PYBIND is enabled: fetching pybind.")
+if(BUILD_WITH_PYBIND)
+    message(STATUS "BUILD_WITH_PYBIND is enabled: fetching pybind.")
     include(FetchContent)
     set(pybind11_SOURCE_DIR "${CMAKE_BINARY_DIR}/3rdparty/pybind11-src")
     set(pybind11_BINARY_DIR "${CMAKE_BINARY_DIR}/3rdparty/pybind11-build")
@@ -193,12 +200,16 @@ if(PYBIND)
     endif()
     add_subdirectory(pybind)
 else()
-    message(STATUS "PYBIND is disabled.")
+    message(STATUS "BUILD_WITH_PYBIND is disabled.")
 endif()
 
 
 add_subdirectory(${THIRDPARTY_DIRECTORY}/vqf/vqf/cpp)
 add_subdirectory(${THIRDPARTY_DIRECTORY}/Fusion/Fusion)
+
+add_subdirectory(${EXTERNAL_LIBRARIES_DIRECTORY}/plycpp)
+add_subdirectory(${EXTERNAL_LIBRARIES_DIRECTORY}/wgs84_do_puwg92)
+add_subdirectory(${EXTERNAL_LIBRARIES_DIRECTORY}/WGS84toCartesian)
 
 add_subdirectory(core)
 
@@ -213,6 +224,10 @@ if(BUILD_WITH_HD_MAPPER_APPLICATION)
     add_subdirectory(apps/hd_mapper)
 endif()
 
+if(BUILD_WITH_QUICK_START_DEMO)
+    add_subdirectory(apps/quick_start_demo)
+endif()
+
 add_subdirectory(apps/lidar_odometry_step_1)    
 add_subdirectory(apps/manual_color)
 add_subdirectory(apps/multi_session_registration)
@@ -221,14 +236,13 @@ add_subdirectory(apps/split_multi_livox)
 add_subdirectory(apps/precision_forestry_tools)
 add_subdirectory(apps/mandeye_raw_data_viewer)
 add_subdirectory(apps/compare_trajectories)
-#add_subdirectory(apps/quick_start_demo)
 add_subdirectory(apps/mandeye_mission_recorder_calibration)
 add_subdirectory(apps/mandeye_single_session_viewer)
 add_subdirectory(apps/livox_mid_360_intrinsic_calibration)
 add_subdirectory(apps/single_session_manual_coloring)
 add_subdirectory(apps/concatenate_multi_livox)
 
-# NOTE(m.wlasiuk) : disable warnings for third party libraries so they do not pollute build logs
+# NOTE(mwlasiuk) : disable warnings for third party libraries so they do not pollute build logs
 
 ###
 ### DISABLE WARNINGS FOR THIRDPARTY CODE - START

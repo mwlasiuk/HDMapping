@@ -1,6 +1,6 @@
 # Python Bindings for HDMapping
 
-Here, Python bindings for the general registration process are available. To compile the bindings when building the project, select `PYBIND` option in the CMake project. This will create the bindings for step 1 and step 2 of the registration process.
+Here, Python bindings for the general registration process are available. To compile the bindings when building the project, select `BUILD_WITH_PYBIND` option in the CMake project. This will create the bindings for step 1 and step 2 of the registration process.
 
 **Make sure to set the same Python interpreter that you plan to use in your project where you require bindings.**
 

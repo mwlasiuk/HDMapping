@@ -90,7 +90,7 @@ make pack
 | `BUILD_WITH_BUNDLED_FREEGLUT` | ON | ON, OFF | Use bundled FreeGLUT library |
 | `BUILD_WITH_BUNDLED_EIGEN` | ON | ON, OFF | Use bundled Eigen library |
 | `BUILD_WITH_BUNDLED_LIBLASZIP` | ON | ON, OFF | Use bundled LASzip library |
-| `PYBIND` | OFF | ON, OFF | Enable Python bindings |
+| `BUILD_WITH_PYBIND` | OFF | ON, OFF | Enable Python bindings |
 
 ## Troubleshooting
 
@@ -107,7 +107,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake -LA .
 
 # View only HDMapping variables  
-cmake -LA . | grep -E "(HD_|BUILD_WITH_|PYBIND)"
+cmake -LA . | grep -E "(HD_|BUILD_WITH_|BUILD_WITH_PYBIND)"
 ```
 
 ### Build Errors

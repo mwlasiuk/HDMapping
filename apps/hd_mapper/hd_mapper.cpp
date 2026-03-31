@@ -1,3 +1,8 @@
+// clang-format off
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+// clang-format on
+
 #include <imgui.h>
 #include <imgui_impl_glut.h>
 #include <imgui_impl_opengl2.h>
@@ -5,19 +10,15 @@
 
 #include <ImGuizmo.h>
 
-// clang-format off
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-// clang-format on
-
 #include <Eigen/Eigen>
 
-#include <laz_wrapper.h>
-#include <odo_with_gnss_fusion.h>
-#include <project_settings.h>
-#include <roi_exporter.h>
-#include <single_trajectory_viewer.h>
-#include <transformations.h>
+#include "laz_wrapper.h"
+#include "odo_with_gnss_fusion.h"
+#include "project_settings.h"
+#include "roi_exporter.h"
+#include "single_trajectory_viewer.h"
+
+#include <Core/transformations.h>
 
 #include <HDMapping/Version.hpp>
 

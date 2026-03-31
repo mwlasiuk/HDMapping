@@ -1,6 +1,6 @@
 #include <pch/pch.h>
 
-#include <CoreHDMapping/odo_with_gnss_fusion.h>
+#include "odo_with_gnss_fusion.h"
 
 #include <GL/freeglut.h>
 #include <portable-file-dialogs.h>

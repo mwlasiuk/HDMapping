@@ -24,21 +24,25 @@ public:
 
     struct Plane
     {
-        Plane()
-        {
-            a = b = c = d = 0.0;
-        }
-        double a;
-        double b;
-        double c;
-        double d;
+        double a = {};
+        double b = {};
+        double c = {};
+        double d = {};
 
-        Plane(Eigen::Vector3d p, Eigen::Vector3d nv)
+        Plane()
+            : a(0.0)
+            , b(0.0)
+            , c(0.0)
+            , d(0.0)
         {
-            a = nv.x();
-            b = nv.y();
-            c = nv.z();
-            d = -a * p.x() - b * p.y() - c * p.z();
+        }
+
+        Plane(const Eigen::Vector3d& p, const Eigen::Vector3d& nv)
+            : a(nv.x())
+            , b(nv.y())
+            , c(nv.z())
+            , d(-a * p.x() - b * p.y() - c * p.z())
+        {
         }
     };
 

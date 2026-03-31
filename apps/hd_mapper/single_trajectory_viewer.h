@@ -7,7 +7,7 @@
 
 #include <ImGuizmo.h>
 
-#include <CoreHDMapping/odo_with_gnss_fusion.h>
+#include "odo_with_gnss_fusion.h"
 
 #include <Core/structures.h>
 
@@ -28,7 +28,7 @@ public:
     std::vector<PointCloudWithPose> point_clouds;
     std::string trajectory_filename;
 
-    std::vector<PointCloudWithPose> get_point_cloud_for_roi(Eigen::Vector3d roi, float roi_size);
+    std::vector<PointCloudWithPose> get_point_cloud_for_roi(const Eigen::Vector3d& roi, float roi_size);
 
     bool load_fused_trajectory(const std::string& file_name);
     bool load_fused_trajectory();

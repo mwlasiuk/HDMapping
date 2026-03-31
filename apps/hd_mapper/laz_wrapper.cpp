@@ -1,6 +1,6 @@
 #include <pch/pch.h>
 
-#include <CoreHDMapping/laz_wrapper.h>
+#include "laz_wrapper.h"
 
 #include <GL/freeglut.h>
 #include <laszip/laszip_api.h>

@@ -3,8 +3,8 @@
 #include <Core/gnss.h>
 #include <Core/nmea.h>
 
-#include <WGS84toCartesian.hpp>
-#include <wgs84_do_puwg92.h>
+#include <WGS84toCartesian/WGS84toCartesian.hpp>
+#include <wgs84_do_puwg92/wgs84_do_puwg92.h>
 
 #if WITH_GUI == 1
 #include <GL/freeglut.h>

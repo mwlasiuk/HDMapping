@@ -16,6 +16,8 @@
 #include <nlohmann/json.hpp>
 #include <vqf.hpp>
 
+#include <HDMapping/Version.hpp>
+
 #include <Core/ndt.h>
 #include <Core/structures.h>
 #include <Core/transformations.h>
@@ -39,12 +41,7 @@ using NDTBucketMapType2 = ankerl::unordered_dense::map<uint64_t, NDT::Bucket2>;
 // Helper function for getting software version from CMake macros
 inline std::string get_software_version()
 {
-#ifdef HDMAPPING_VERSION_MAJOR
-    return std::to_string(HDMAPPING_VERSION_MAJOR) + "." + std::to_string(HDMAPPING_VERSION_MINOR) + "." +
-        std::to_string(HDMAPPING_VERSION_PATCH);
-#else
-    return "0.84.0"; // fallback if CMake macros not available
-#endif
+    return HDMAPPING_VERSION_STRING;
 }
 
 struct LidarOdometryParams

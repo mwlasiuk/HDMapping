@@ -22,7 +22,7 @@ add_executable(
 
 target_compile_definitions(lidar_odometry_step_1 PRIVATE
     WITH_GUI=1
-    $<$<BOOL:${UTL_PROFILER_DISABLE}>:UTL_PROFILER_DISABLE>)
+    $<$<BOOL:${BUILD_WITH_UTL_PROFILER_DISABLED}>:BUILD_WITH_UTL_PROFILER_DISABLED>)
 
 target_include_directories(
   lidar_odometry_step_1
@@ -47,14 +47,15 @@ target_include_directories(
 
 target_link_libraries(
           lidar_odometry_step_1
-          PRIVATE vqf Fusion
+          PRIVATE 
+          vqf 
+          Fusion
           unordered_dense::unordered_dense
           spdlog::spdlog
           UTL::include
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
+          OpenGL::GLU
           ${FREEGLUT_LIBRARY}
           ${OPENGL_gl_LIBRARY}
-          OpenGL::GLU
           ${PLATFORM_LASZIP_LIB}
           ${PLATFORM_MISCELLANEOUS_LIBS}
           ${CORE_LIBRARIES}
@@ -80,7 +81,7 @@ add_executable(
 
 target_compile_definitions(drag_folder_with_mandeye_data_and_drop_here-precision_forestry PRIVATE
     WITH_GUI=1
-    $<$<BOOL:${UTL_PROFILER_DISABLE}>:UTL_PROFILER_DISABLE>)
+    $<$<BOOL:${BUILD_WITH_UTL_PROFILER_DISABLED}>:BUILD_WITH_UTL_PROFILER_DISABLED>)
 
 target_include_directories(
   drag_folder_with_mandeye_data_and_drop_here-precision_forestry
@@ -105,14 +106,15 @@ target_include_directories(
 
 target_link_libraries(
           drag_folder_with_mandeye_data_and_drop_here-precision_forestry
-          PRIVATE vqf Fusion
+          PRIVATE 
+          vqf 
+          Fusion
           unordered_dense::unordered_dense
           spdlog::spdlog
           UTL::include
-          # PRIVATE ${THIRDPARTY_DIRECTORY}/glew-2.2.0/lib/Release/x64/glew32s.lib
+          OpenGL::GLU
           ${FREEGLUT_LIBRARY}
           ${OPENGL_gl_LIBRARY}
-          OpenGL::GLU
           ${PLATFORM_LASZIP_LIB}
           ${PLATFORM_MISCELLANEOUS_LIBS}
           ${CORE_LIBRARIES}

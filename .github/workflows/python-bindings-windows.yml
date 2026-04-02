@@ -40,7 +40,7 @@ jobs:
         run: |
           cmake -B ${{github.workspace}}/build_pybind `
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} `
-            -DPYBIND=ON `
+            -DBUILD_WITH_PYBIND=ON `
         shell: pwsh
 
       - name: Build Python bindings

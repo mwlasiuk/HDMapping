@@ -15,13 +15,13 @@
 
 #include <Eigen/Eigen>
 
-#include <transformations.h>
+#include <Core/transformations.h>
+#include <Core/export_laz.h>
 
 #include <portable-file-dialogs.h>
 
 #include <filesystem>
 #include "../lidar_odometry_step_1/lidar_odometry_utils.h"
-#include <export_laz.h>
 #include <HDMapping/Version.hpp>
 
 #include <mutex>
@@ -711,7 +711,7 @@ bool compute_step_2_demo(std::vector<WorkerData> &worker_data, LidarOdometryPara
 
 int main(int argc, char *argv[])
 {
-    #if 0 
+    #if 0
     //ToDo
     params.in_out_params_indoor.resolution_X = 0.3;
     params.in_out_params_indoor.resolution_Y = 0.3;

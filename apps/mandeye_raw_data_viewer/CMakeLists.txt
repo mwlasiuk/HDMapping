@@ -42,7 +42,7 @@ target_include_directories(
   ${THIRDPARTY_DIRECTORY}/vqf/vqf/cpp
   ${THIRDPARTY_DIRECTORY}/Fusion/Fusion)
 
-target_compile_definitions(mandeye_raw_data_viewer PRIVATE UTL_PROFILER_DISABLE)
+target_compile_definitions(mandeye_raw_data_viewer PRIVATE BUILD_WITH_UTL_PROFILER_DISABLED)
 
 target_link_libraries(
   mandeye_raw_data_viewer

@@ -186,7 +186,7 @@ ToDo
 - https://github.com/kafeiyin00/HCTO (2024, ISPRS-Elsevier, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/HCTO.bib), no source code)
 - https://kafeiyin00.github.io/AEOS/ (2026, ISPRS-Elsevier, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/AEOS.bib), no source code)
 - https://github.com/KTH-RPL/dufomap (2024, RA-L, [[BIB](https://github.com/MapsHD/HDMapping/blob/main/bib/dufomap.bib)])
-- https://github.com/KTH-RPL/DynamicMap_Benchmark
+- https://github.com/KTH-RPL/DynamicMap_Benchmark (2023, ITSC, [[BIB](https://github.com/MapsHD/HDMapping/blob/main/bib/dufomap.bib)])
 - https://github.com/thisparticle/btsa
 - https://github.com/MapsHD/benchmark-MAD-ICP-to-HDMapping (2024, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MAD-ICP.bib))
 - https://github.com/MapsHD/benchmark-LIO-SAM-to-HDMapping (2020, IROS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-SAM.bib))

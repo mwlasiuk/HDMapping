@@ -214,7 +214,7 @@ ToDo
 - https://www.sciencedirect.com/science/article/abs/pii/S1566253525002052 (2025, Elsevier Information Fusion, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/STATIC-LIO.bib), no code)
 - https://github.com/SlamCabbage/Optimized-SC-F-LOAM (2022, CVCI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-F-LOAM.bib))
 - https://github.com/gisbi-kim/SC-LeGO-LOAM (2018, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-LeGO-LOAM.bib))
-- https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM
+- https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM (2020, ICRA, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LINS.bib))
 - https://github.com/PRBonn/PIN_SLAM
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM
 - https://arxiv.org/pdf/2509.06593 - rko-lio

@@ -211,7 +211,7 @@ ToDo
 - https://neufs-ma.github.io/M3DSS/index.html (benchmark, dataset)
 - https://github.com/MapsHD/benchmark-LiDAR-IMU-Init-to-HDMapping (2022) (extrinsic calibration)
 - Fast and Robust LiDAR-Inertial Odometry by Tightly-Coupled Iterated Kalman Smoother and Robocentric Voxels, RC-Vox (2024, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/RC-Vox.bib), no code)
-- https://www.sciencedirect.com/science/article/abs/pii/S1566253525002052
+- https://www.sciencedirect.com/science/article/abs/pii/S1566253525002052 (2025, Elsevier Information Fusion, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/STATIC-LIO.bib), no code)
 - https://github.com/SlamCabbage/Optimized-SC-F-LOAM
 - https://github.com/gisbi-kim/SC-LeGO-LOAM
 - https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM

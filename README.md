@@ -180,7 +180,7 @@ Datasets
 
 InProgress
 - https://ieeexplore.ieee.org/document/10900461, https://github.com/kafeiyin00/UA-MPC (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UA-MPC.bib))
-- https://github.com/kafeiyin00/HCTO
+- https://github.com/kafeiyin00/HCTO (2024, ISPRS-Elsevier, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/HCTO.bib))
 - https://kafeiyin00.github.io/AEOS/
 
 ToDo

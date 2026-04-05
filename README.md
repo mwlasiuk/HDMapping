@@ -215,7 +215,7 @@ ToDo
 - https://github.com/SlamCabbage/Optimized-SC-F-LOAM (2022, CVCI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-F-LOAM.bib))
 - https://github.com/gisbi-kim/SC-LeGO-LOAM (2018, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-LeGO-LOAM.bib))
 - https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM (2020, ICRA, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LINS.bib))
-- https://github.com/PRBonn/PIN_SLAM
+- https://github.com/PRBonn/PIN_SLAM (2024, TRO, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/PIN-SLAM.bib))
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM
 - https://arxiv.org/pdf/2509.06593 - rko-lio
 - https://arxiv.org/pdf/2410.05433 - 2FAST-LAMA

@@ -184,7 +184,7 @@ InProgress
 - https://kafeiyin00.github.io/AEOS/ (2026, ISPRS-Elsevier, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/AEOS.bib))
 
 ToDo
-- https://github.com/NKU-MobFly-Robotics/R-VoxelMap
+- https://github.com/NKU-MobFly-Robotics/R-VoxelMap (2026, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/R-VoxelMap.bib)) -- no source code
 - https://github.com/KTH-RPL/dufomap
 - https://github.com/KTH-RPL/DynamicMap_Benchmark
 - https://github.com/thisparticle/btsa

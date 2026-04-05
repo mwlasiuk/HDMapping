@@ -179,7 +179,7 @@ Datasets
 - NTU VIRAL https://ntu-aris.github.io/ntu_viral_dataset/
 
 InProgress
-- https://ieeexplore.ieee.org/document/10900461, https://github.com/kafeiyin00/UA-MPC
+- https://ieeexplore.ieee.org/document/10900461, https://github.com/kafeiyin00/UA-MPC (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UA-MPC.bib))
 - https://github.com/kafeiyin00/HCTO
 - https://kafeiyin00.github.io/AEOS/
 

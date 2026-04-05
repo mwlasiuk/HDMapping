@@ -216,14 +216,6 @@ ToDo
 - https://github.com/gisbi-kim/SC-LeGO-LOAM (2018, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-LeGO-LOAM.bib))
 - https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM (2020, ICRA, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LINS.bib))
 - https://github.com/PRBonn/PIN_SLAM (2024, TRO, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/PIN-SLAM.bib))
-- https://arxiv.org/pdf/2503.12660 - KISS-SLAM
-- https://arxiv.org/pdf/2509.06593 - rko-lio
-- https://arxiv.org/pdf/2410.05433 - 2FAST-LAMA
-- https://arxiv.org/pdf/2503.19506 - MM-LINS
-- https://arxiv.org/pdf/2410.08935 - VOXEL-SLAM
-- https://arxiv.org/pdf/2204.04932 - SC-F-LOAM
-- https://www.mdpi.com/1424-8220/22/2/520 - LEGO-LOAM-SC
-- https://arxiv.org/pdf/1907.02233 - LINS-SLAM
 - https://ieeexplore.ieee.org/abstract/document/11206445
 - https://ieeexplore.ieee.org/abstract/document/11045969
 - https://ieeexplore.ieee.org/document/10954274
@@ -231,6 +223,15 @@ ToDo
 - https://www.mdpi.com/2072-4292/17/15/2661
 - https://github.com/Livox-SDK/LIO-Livox
 - https://github.com/DCSI2022/DALI_SLAM
+
+To check if addressed
+- https://arxiv.org/pdf/2503.12660 - KISS-SLAM
+- https://arxiv.org/pdf/2509.06593 - rko-lio
+- https://arxiv.org/pdf/2410.05433 - 2FAST-LAMA
+- https://arxiv.org/pdf/2410.08935 - VOXEL-SLAM
+- https://arxiv.org/pdf/2204.04932 - SC-F-LOAM
+- https://www.mdpi.com/1424-8220/22/2/520 - LEGO-LOAM-SC
+- https://arxiv.org/pdf/1907.02233 - LINS-SLAM
 
 # Knowledge base (accuracy, precision, benchmarks, comparison to other mobile mapping systems, etc.)
 

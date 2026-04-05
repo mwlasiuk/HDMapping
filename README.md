@@ -190,7 +190,7 @@ ToDo
 - https://github.com/thisparticle/btsa (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/A-Dynamic-Aware-LIO.bib), dynamic scenes)
 - https://github.com/MapsHD/benchmark-MAD-ICP-to-HDMapping (2024, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MAD-ICP.bib), compatibilty issue - only trajectory provided)
 - https://github.com/MapsHD/benchmark-LIO-SAM-to-HDMapping (2020, IROS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-SAM.bib), with loop closures)
-- https://robotics-upo.github.io/D-LIO/ (2026, RA-L,[[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/D-LIO.bib))
+- https://robotics-upo.github.io/D-LIO/ (2026, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/D-LIO.bib))
 - https://github.com/MapsHD/benchmark-KISS-SLAM-to-HDMapping (2025, IROS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/kiss-slam.bib)) (not solved issue https://github.com/kpmrozowski/KISS-SLAM-to-HDMapping/issues/1)
 - https://github.com/MapsHD/rko_lio (2025, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/RKO-LIO.bib)) (not solved issue: https://github.com/marcinmatecki/rko-lio-to-HDMapping/issues/1)
 - https://github.com/clegenti/2fast2lamaa (2025, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/2FAST-2LAMAA.bib))

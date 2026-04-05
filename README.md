@@ -216,7 +216,7 @@ ToDo
 - https://github.com/gisbi-kim/SC-LeGO-LOAM (2018, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-LeGO-LOAM.bib))
 - https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM (2020, ICRA, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LINS.bib))
 - https://github.com/PRBonn/PIN_SLAM (2024, TRO, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/PIN-SLAM.bib))
-- https://ieeexplore.ieee.org/abstract/document/11206445
+- https://ieeexplore.ieee.org/abstract/document/11206445 (2025, RA-L, [[BIB]](), no source code)
 - https://ieeexplore.ieee.org/abstract/document/11045969
 - https://ieeexplore.ieee.org/document/10954274
 - https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903

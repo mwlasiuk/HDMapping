@@ -221,7 +221,6 @@ ToDo
 - https://ieeexplore.ieee.org/document/10954274 (2025, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Universal-LiDAR-Odometry-and-Mapping-With-Dual-Channel-Descriptor.bib), no source code)
 - https://github.com/Livox-SDK/LIO-Livox (2026, Livox proprietary, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-Livox.bib))
 - https://github.com/DCSI2022/DALI_SLAM (2025, Elsevier ISPRS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/DALI-SLAM.bib))
-- https://github.com/IRMVLab/DSLO
 - https://ojs.aaai.org/index.php/AAAI/article/view/25256
 
 Deep learning
@@ -229,6 +228,8 @@ Deep learning
 - https://www.mdpi.com/2072-4292/17/15/2661 (2025, MDPI Remote Sensing, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UnMinkLO-Net.bib), DNN model not available)
 - https://github.com/IRMVLab/TransLO (2023, AAAI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/TransLO.bib))
 - https://github.com/IRMVLab/PWCLONet (2021, IEEE/CVF CVPR, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/PWCLO-Net.bib))
+- https://github.com/IRMVLab/DSLO (2024, arXiv, [[BIB]](), DNN model not available)
+
 
 To check if addressed
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM

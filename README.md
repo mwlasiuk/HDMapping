@@ -219,7 +219,6 @@ ToDo
 - https://ieeexplore.ieee.org/abstract/document/11206445 (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SPS-LIO.bib), no source code)
 - https://ieeexplore.ieee.org/abstract/document/11045969 (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Tightly-Coupled-SLAM-With-Imprecise-Architectural-Plans.bib), no source code)
 - https://ieeexplore.ieee.org/document/10954274 (2025, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Universal-LiDAR-Odometry-and-Mapping-With-Dual-Channel-Descriptor.bib), no source code)
-- https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903 (2025, Elsevier RAS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MFS-LO.bib), no source code)
 - https://github.com/Livox-SDK/LIO-Livox
 - https://github.com/DCSI2022/DALI_SLAM
 - https://github.com/IRMVLab/PWCLONet
@@ -227,6 +226,7 @@ ToDo
 - https://ojs.aaai.org/index.php/AAAI/article/view/25256
 
 Deep learning
+- https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903 (2025, Elsevier RAS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MFS-LO.bib), no source code)
 - https://www.mdpi.com/2072-4292/17/15/2661 (2025, MDPI Remote Sensing, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UnMinkLO-Net.bib), DNN model not available)
 - https://github.com/IRMVLab/TransLO (2023, AAAI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/TransLO.bib))
 

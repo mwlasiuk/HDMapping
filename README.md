@@ -159,10 +159,6 @@ It is designed for a benchmark.
 [[quantitative evaluation benchmark movie]](https://youtu.be/PsJaXpWFAis)
 [[quantitative benchmark]](https://github.com/MapsHD/benchmark-HDMapping-evaluation-of-odometry-and-SLAM)
 
-under testing
-
-...
-
 Benchmark Orchestration
 
 - https://github.com/MapsHD/benchmark-HDMapping-Orchestration 
@@ -222,7 +218,7 @@ ToDo
 - https://github.com/Livox-SDK/LIO-Livox (2026, Livox proprietary, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-Livox.bib))
 - https://github.com/DCSI2022/DALI_SLAM (2025, Elsevier ISPRS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/DALI-SLAM.bib))
 
-Deep learning
+ToDo: Deep learning
 - https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903 (2025, Elsevier RAS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MFS-LO.bib), no source code)
 - https://www.mdpi.com/2072-4292/17/15/2661 (2025, MDPI Remote Sensing, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UnMinkLO-Net.bib), DNN model not available)
 - https://github.com/IRMVLab/TransLO (2023, AAAI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/TransLO.bib))
@@ -230,7 +226,7 @@ Deep learning
 - https://github.com/IRMVLab/DSLO (2024, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/DSLO.bib), DNN model not available)
 
 
-To check if addressed
+ToDo: check if addressed
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM
 - https://arxiv.org/pdf/2509.06593 - rko-lio
 - https://arxiv.org/pdf/2410.05433 - 2FAST-LAMA

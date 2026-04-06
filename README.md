@@ -226,6 +226,7 @@ ToDo
 - https://github.com/IRMVLab/PWCLONet
 - https://github.com/IRMVLab/DSLO
 - https://ojs.aaai.org/index.php/AAAI/article/view/25256
+- https://github.com/IRMVLab/TransLO (2023, AAAI, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/TransLO.bib))
 
 To check if addressed
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM

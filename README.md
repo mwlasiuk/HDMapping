@@ -221,7 +221,6 @@ ToDo
 - https://ieeexplore.ieee.org/document/10954274 (2025, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Universal-LiDAR-Odometry-and-Mapping-With-Dual-Channel-Descriptor.bib), no source code)
 - https://github.com/Livox-SDK/LIO-Livox (2026, Livox proprietary, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-Livox.bib))
 - https://github.com/DCSI2022/DALI_SLAM (2025, Elsevier ISPRS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/DALI-SLAM.bib))
-- https://ojs.aaai.org/index.php/AAAI/article/view/25256
 
 Deep learning
 - https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903 (2025, Elsevier RAS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MFS-LO.bib), no source code)

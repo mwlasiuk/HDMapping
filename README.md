@@ -223,6 +223,9 @@ ToDo
 - https://www.mdpi.com/2072-4292/17/15/2661 (2025, MDPI Remote Sensing, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UnMinkLO-Net.bib), DNN model not available)
 - https://github.com/Livox-SDK/LIO-Livox
 - https://github.com/DCSI2022/DALI_SLAM
+- https://github.com/IRMVLab/PWCLONet
+- https://github.com/IRMVLab/DSLO
+- https://ojs.aaai.org/index.php/AAAI/article/view/25256
 
 To check if addressed
 - https://arxiv.org/pdf/2503.12660 - KISS-SLAM

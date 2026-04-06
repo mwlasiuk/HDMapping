@@ -220,7 +220,7 @@ ToDo
 - https://ieeexplore.ieee.org/abstract/document/11045969 (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Tightly-Coupled-SLAM-With-Imprecise-Architectural-Plans.bib), no source code)
 - https://ieeexplore.ieee.org/document/10954274 (2025, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/Universal-LiDAR-Odometry-and-Mapping-With-Dual-Channel-Descriptor.bib), no source code)
 - https://github.com/Livox-SDK/LIO-Livox (2026, Livox proprietary, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-Livox.bib))
-- https://github.com/DCSI2022/DALI_SLAM
+- https://github.com/DCSI2022/DALI_SLAM (2025, Elsevier ISPRS, [[BIB]]())
 - https://github.com/IRMVLab/PWCLONet
 - https://github.com/IRMVLab/DSLO
 - https://ojs.aaai.org/index.php/AAAI/article/view/25256

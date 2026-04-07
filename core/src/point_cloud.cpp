@@ -149,9 +149,9 @@ bool PointCloud::load_pc(const std::string& input_file_name, bool load_cache_mod
     this->intensities.clear();
     this->timestamps.clear();
 
-    this->points_local.resize(npoints);
-    this->intensities.resize(npoints);
-    this->timestamps.resize(npoints);
+    this->points_local.reserve(npoints);
+    this->intensities.reserve(npoints);
+    this->timestamps.reserve(npoints);
 
     while (p_count < npoints)
     {

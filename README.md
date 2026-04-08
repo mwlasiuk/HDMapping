@@ -183,7 +183,7 @@ ToDo
 - https://kafeiyin00.github.io/AEOS/ (2026, ISPRS-Elsevier, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/AEOS.bib), no source code)
 - https://ieeexplore.ieee.org/document/10900461, https://github.com/kafeiyin00/UA-MPC (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/UA-MPC.bib), we do not support rotary LiDAR)
 - https://github.com/MapsHD/benchmark-KISS-SLAM-to-HDMapping (2025, IROS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/kiss-slam.bib)) (not solved issue https://github.com/kpmrozowski/KISS-SLAM-to-HDMapping/issues/1)
-- https://github.com/thisparticle/btsa (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/A-Dynamic-Aware-LIO.bib), dynamic scenes)
+- https://github.com/thisparticle/btsa (2025, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/A-Dynamic-Aware-LIO.bib), dynamic scenes) - Marcin 
 - https://github.com/MapsHD/rko_lio (2025, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/RKO-LIO.bib)) (not solved issue: https://github.com/marcinmatecki/rko-lio-to-HDMapping/issues/1)
 - https://github.com/clegenti/2fast2lamaa (2025, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/2FAST-2LAMAA.bib))
 - https://github.com/lian-yue0515/MM-LINS (2025, TIV, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MM-LINS.bib))
@@ -198,7 +198,7 @@ ToDo
 - https://github.com/KTH-RPL/dufomap (2024, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/dufomap.bib), dynamic scenes)
 - https://github.com/KTH-RPL/DynamicMap_Benchmark (2023, ITSC, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/dufomap.bib), dynamic scenes)
 - https://github.com/MapsHD/benchmark-MAD-ICP-to-HDMapping (2024, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MAD-ICP.bib), compatibilty issue - only trajectory provided)
-- https://github.com/deptrum/c3p-voxelmap (2024, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/c3p-voxelmap.bib))
+- https://github.com/deptrum/c3p-voxelmap (2024, arXiv, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/c3p-voxelmap.bib)) - Marcin
 - https://github.com/MapsHD/benchmark-LIO-SAM-to-HDMapping (2020, IROS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-SAM.bib), with loop closures)
 - Fast and Robust LiDAR-Inertial Odometry by Tightly-Coupled Iterated Kalman Smoother and Robocentric Voxels, RC-Vox (2024, IEEE TITS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/RC-Vox.bib), no code)
 - https://github.com/Ji1Xingyu/lio_gvm (2024, RA-L, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LIO-GVM.bib)) (not solved issues: https://github.com/Ji1Xingyu/lio_gvm/issues/13, https://github.com/Ji1Xingyu/lio_gvm/issues/12, https://github.com/Ji1Xingyu/lio_gvm/issues/7)

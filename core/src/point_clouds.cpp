@@ -1317,6 +1317,11 @@ bool PointClouds::load_whu_tls(
                 point_clouds[i].points_local[j] -= this->offset;
     }
 
+    size_t total_points = 0;
+    for (int i = 0; i < point_clouds.size(); i++)
+        total_points += point_clouds[i].points_local.size();
+    std::cout << "total points loaded: " << total_points << std::endl;
+
     print_point_cloud_dimension();
     const auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;

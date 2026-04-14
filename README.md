@@ -219,7 +219,9 @@ ToDo
 - https://github.com/ChaoqinRobotics/LINS---LiDAR-inertial-SLAM (2020, ICRA, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/LINS.bib))
 - https://github.com/HKUST-Aerial-Robotics/A-LOAM (2019, no publication)
 - https://neufs-ma.github.io/M3DSS/index.html (benchmark, dataset)
+- https://github.com/PRBonn/semantic_suma/ (2019, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SuMa.bib))
 - https://github.com/gisbi-kim/SC-LeGO-LOAM (2018, IEEE/RSJ, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/SC-LeGO-LOAM.bib))
+
 
 ToDo: Deep learning
 - https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903 (2025, Elsevier RAS, [[BIB]](https://github.com/MapsHD/HDMapping/blob/main/bib/MFS-LO.bib), no source code)

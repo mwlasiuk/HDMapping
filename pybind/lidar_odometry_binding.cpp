@@ -51,6 +51,16 @@ PYBIND11_MODULE(lidar_odometry_py, m)
         .def_readwrite("index_of_bucket", &NDT::PointBucketIndexPair::index_of_bucket)
         .def_readwrite("index_pose", &NDT::PointBucketIndexPair::index_pose);
 
+    // Bind SubmapParams (one level of the step 1 voxel maps)
+    py::class_<SubmapParams>(m, "SubmapParams")
+        .def(py::init<>())
+        .def_readwrite("grid", &SubmapParams::grid)
+        .def_readwrite("min_range", &SubmapParams::min_range)
+        .def_readwrite("weight", &SubmapParams::weight);
+
+    m.attr("MIN_SUBMAPS") = kMinSubmaps;
+    m.attr("MAX_SUBMAPS") = kMaxSubmaps;
+
     // Bind LidarOdometryParams
     py::class_<LidarOdometryParams>(m, "LidarOdometryParams")
         .def(py::init<>())
@@ -58,10 +68,63 @@ PYBIND11_MODULE(lidar_odometry_py, m)
         .def_readwrite("filter_threshold_xy_outer", &LidarOdometryParams::filter_threshold_xy_outer)
         .def_readwrite("m_g", &LidarOdometryParams::m_g)
         .def_readwrite("initial_points", &LidarOdometryParams::initial_points)
-        .def_readwrite("in_out_params_indoor", &LidarOdometryParams::in_out_params_indoor)
-        .def_readwrite("in_out_params_outdoor", &LidarOdometryParams::in_out_params_outdoor)
-        .def_readwrite("buckets_indoor", &LidarOdometryParams::buckets_indoor)
-        .def_readwrite("buckets_outdoor", &LidarOdometryParams::buckets_outdoor)
+        .def_readwrite("number_of_submaps", &LidarOdometryParams::number_of_submaps)
+        .def_readwrite("submaps", &LidarOdometryParams::submaps) // a copy: assign the whole list, or use submap(level)
+        .def(
+            "submap",
+            [](LidarOdometryParams& p, int level) -> SubmapParams&
+            {
+                if (level < 0 || level >= kMaxSubmaps)
+                    throw py::index_error("submap level out of range");
+                return p.submaps[level];
+            },
+            py::arg("level"),
+            py::return_value_policy::reference_internal)
+        // levels 0 and 1 under their former names
+        .def_property(
+            "in_out_params_indoor",
+            [](LidarOdometryParams& p) -> NDT::GridParameters&
+            {
+                return p.submaps[0].grid;
+            },
+            [](LidarOdometryParams& p, const NDT::GridParameters& g)
+            {
+                p.submaps[0].grid = g;
+            },
+            py::return_value_policy::reference_internal)
+        .def_property(
+            "in_out_params_outdoor",
+            [](LidarOdometryParams& p) -> NDT::GridParameters&
+            {
+                return p.submaps[1].grid;
+            },
+            [](LidarOdometryParams& p, const NDT::GridParameters& g)
+            {
+                p.submaps[1].grid = g;
+            },
+            py::return_value_policy::reference_internal)
+        .def_property(
+            "buckets_indoor",
+            [](LidarOdometryParams& p) -> NDTBucketMapType&
+            {
+                return p.buckets[0];
+            },
+            [](LidarOdometryParams& p, const NDTBucketMapType& b)
+            {
+                p.buckets[0] = b;
+            },
+            py::return_value_policy::reference_internal)
+        .def_property(
+            "buckets_outdoor",
+            [](LidarOdometryParams& p) -> NDTBucketMapType&
+            {
+                return p.buckets[1];
+            },
+            [](LidarOdometryParams& p, const NDTBucketMapType& b)
+            {
+                p.buckets[1] = b;
+            },
+            py::return_value_policy::reference_internal)
         .def_readwrite("use_motion_from_previous_step", &LidarOdometryParams::use_motion_from_previous_step)
         .def_readwrite("lidar_only_odometry", &LidarOdometryParams::lidar_only_odometry)
         .def_readwrite("consecutive_distance", &LidarOdometryParams::consecutive_distance)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <array>
 #include <chrono>
 #include <cmath>
 #include <filesystem>
@@ -40,6 +42,34 @@ namespace fs = std::filesystem;
 
 using NDTBucketMapType = ankerl::unordered_dense::map<uint64_t, NDT::Bucket>;
 using NDTBucketMapType2 = ankerl::unordered_dense::map<uint64_t, NDT::Bucket2>;
+
+// Step 1 matches each point against voxel maps (submaps) of the same points at different voxel sizes. Level 0 is the
+// fine map (formerly "indoor"), level 1 the coarse one ("outdoor"); levels 2+ are extra levels for multi-resolution
+// tests. Each level a point reaches adds its own term to the normal equations.
+constexpr int kMinSubmaps = 2;
+constexpr int kMaxSubmaps = 8;
+
+struct SubmapParams
+{
+    NDT::GridParameters grid{}; // voxel size: resolution_X/Y/Z
+    double min_range = 0.0; // [m] range in the sensor frame from which a point uses this level
+    double weight = 1.0; // scales this level's terms in the normal equations
+};
+
+// Level 0: 0.1 m for all ranges; levels 1+: from 5 m, level 1 at 0.3 m (the former indoor and outdoor maps).
+inline std::array<SubmapParams, kMaxSubmaps> default_submaps()
+{
+    constexpr double resolution[kMaxSubmaps] = { 0.1, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0 };
+    std::array<SubmapParams, kMaxSubmaps> submaps{};
+    for (int level = 0; level < kMaxSubmaps; ++level)
+    {
+        submaps[level].grid.resolution_X = resolution[level];
+        submaps[level].grid.resolution_Y = resolution[level];
+        submaps[level].grid.resolution_Z = resolution[level];
+        submaps[level].min_range = level == 0 ? 0.0 : 5.0;
+    }
+    return submaps;
+}
 
 // Helper function for getting software version from CMake macros
 inline std::string get_software_version()
@@ -135,8 +165,9 @@ struct LidarOdometryParams
     // previous window (constant velocity) instead of from the IMU orientation.
     bool lidar_only_odometry = false;
     int nr_iter = 100;
-    NDT::GridParameters in_out_params_indoor;
-    NDT::GridParameters in_out_params_outdoor;
+    // voxel maps: the first number_of_submaps (kMinSubmaps..kMaxSubmaps) levels are used, see active_submaps()
+    int number_of_submaps = kMinSubmaps;
+    std::array<SubmapParams, kMaxSubmaps> submaps = default_submaps();
     double sliding_window_trajectory_length_threshold = 5.0;
     double max_distance_lidar = 70.0; // I am not processing data above dist distance in lidar odometry
     int threshold_initial_points = 10000;
@@ -207,13 +238,10 @@ struct LidarOdometryParams
     // NDTBucketMapType reference_buckets;
     double total_length_of_calculated_trajectory = 0.0;
 
-    std::mutex mutex_buckets_indoor;
-    NDTBucketMapType buckets_indoor;
-    uint64_t buckets_indoor_revision = 0; // protected by mutex_buckets_indoor
-
-    std::mutex mutex_buckets_outdoor;
-    NDTBucketMapType buckets_outdoor;
-    uint64_t buckets_outdoor_revision = 0; // protected by mutex_buckets_outdoor
+    // one voxel map per submap level; every writer and the optimizer use all levels together, so one mutex guards them
+    std::mutex mutex_buckets;
+    std::array<NDTBucketMapType, kMaxSubmaps> buckets;
+    std::array<uint64_t, kMaxSubmaps> buckets_revision{}; // protected by mutex_buckets
 
 #if WITH_GUI == 1
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -236,6 +264,34 @@ struct LidarOdometryParams
     bool save_index_pose = false;
     bool ablation_study_use_anisotropic_weighting = true;
 };
+
+// number_of_submaps limited to kMinSubmaps..kMaxSubmaps
+inline int configured_submaps(const LidarOdometryParams& params)
+{
+    return std::clamp(params.number_of_submaps, kMinSubmaps, kMaxSubmaps);
+}
+
+// the submap levels step 1 builds and matches against: level 0 alone with the hierarchy turned off
+inline int active_submaps(const LidarOdometryParams& params)
+{
+    return params.ablation_study_use_hierarchical_rgd ? configured_submaps(params) : 1;
+}
+
+// the classic two-level setup: level 0 at `fine` m for all ranges, level 1 at `coarse` m from 5 m, both weight 1
+inline void set_two_level_submaps(LidarOdometryParams& params, double fine, double coarse)
+{
+    params.number_of_submaps = 2;
+    const double resolution[2] = { fine, coarse };
+    for (int level = 0; level < 2; ++level)
+    {
+        SubmapParams& s = params.submaps[level];
+        s.grid.resolution_X = resolution[level];
+        s.grid.resolution_Y = resolution[level];
+        s.grid.resolution_Z = resolution[level];
+        s.min_range = level == 0 ? 0.0 : 5.0;
+        s.weight = 1.0;
+    }
+}
 
 inline VQFParams buildVQFParams(const LidarOdometryParams& p)
 {
@@ -286,31 +342,27 @@ void update_rgd(
 // Statistics for bucket lookups (used for performance analysis)
 struct LookupStats
 {
-    size_t indoor_lookups = 0;
-    size_t outdoor_lookups = 0;
+    std::array<size_t, kMaxSubmaps> lookups{}; // per submap level
 };
 
-// The indoor/outdoor buckets one point of the chunk falls in at the current poses (null: none, or out of range).
+// The bucket one point of the chunk falls in at the current poses, in one submap level (null: none, or out of range).
 // Looked up again in each optimization iteration only when the bucket key changed: the maps do not change while a
 // chunk is optimized.
-struct PointBuckets
+struct SubmapLookup
 {
-    const NDT::Bucket* indoor = nullptr;
-    const NDT::Bucket* outdoor = nullptr;
-    uint64_t key_indoor = ~0ull; // keys of the last lookup (~0: none)
-    uint64_t key_outdoor = ~0ull;
-    int nv_bin_indoor = -1; // normal-vector histogram bins of those buckets (-1: none)
-    int nv_bin_outdoor = -1;
+    const NDT::Bucket* bucket = nullptr;
+    uint64_t key = ~0ull; // key of the last lookup (~0: none)
+    int nv_bin = -1; // normal-vector histogram bin of that bucket (-1: none)
 };
+using SubmapLookups = std::vector<std::vector<SubmapLookup>>; // [level][point]
 
-// hierarchical version: updates both indoor and outdoor, then links buckets
-void update_rgd_hierarchy(
-    const NDT::GridParameters& rgd_params_indoor,
-    NDTBucketMapType& buckets_indoor,
+// updates levels [0, count) of buckets with the same points, in parallel (each level only touches its own map)
+void update_rgd_submaps(
+    const std::array<SubmapParams, kMaxSubmaps>& submaps,
+    std::array<NDTBucketMapType, kMaxSubmaps>& buckets,
+    int count,
     const std::vector<Point3Di>& points_global,
     const Eigen::Vector3d& viewport,
-    const NDT::GridParameters& rgd_params_outdoor,
-    NDTBucketMapType& buckets_outdoor,
     LookupStats& stats);
 
 // the same two with the ray-cast decision (upstream: buffer size < 100000) made by the caller
@@ -321,13 +373,12 @@ void update_rgd_ray(
     const Eigen::Vector3d& viewport,
     size_t* lookup_count,
     bool ray_cast);
-void update_rgd_hierarchy_ray(
-    const NDT::GridParameters& rgd_params_indoor,
-    NDTBucketMapType& buckets_indoor,
+void update_rgd_submaps_ray(
+    const std::array<SubmapParams, kMaxSubmaps>& submaps,
+    std::array<NDTBucketMapType, kMaxSubmaps>& buckets,
+    int count,
     const std::vector<Point3Di>& points_global,
     const Eigen::Vector3d& viewport,
-    const NDT::GridParameters& rgd_params_outdoor,
-    NDTBucketMapType& buckets_outdoor,
     LookupStats& stats,
     bool ray_cast);
 
@@ -383,7 +434,8 @@ fs::path get_next_result_path(const std::string& working_directory);
 // this function performs main LiDAR odometry calculations
 void optimize_lidar_odometry(
     std::vector<Point3Di>& intermediate_points,
-    const std::vector<PointBuckets>& point_buckets,
+    const SubmapLookups& submap_lookups, // one per level used: level 0 first
+    const std::array<SubmapParams, kMaxSubmaps>& submaps,
     std::vector<Eigen::Affine3d>& intermediate_trajectory,
     std::vector<Eigen::Affine3d>& intermediate_trajectory_motion_model,
     bool useMultithread,
@@ -409,8 +461,7 @@ void optimize_lidar_odometry(
     const bool& ablation_study_use_threshold_outer_rgd,
     const double& convergence_result,
     const double& convergence_delta_threshold_outer_rgd,
-    const std::vector<double>& table_buckets_nv_indoor,
-    const std::vector<double>& table_buckets_nv_outdoor);
+    const std::array<std::vector<double>, kMaxSubmaps>& table_buckets_nv); // per level
 
 void optimize_sf2(
     std::vector<Point3Di>& intermediate_points,

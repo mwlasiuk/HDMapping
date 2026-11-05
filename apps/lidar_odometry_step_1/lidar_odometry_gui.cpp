@@ -95,8 +95,10 @@ namespace fs = std::filesystem;
 bool is_settings_gui = false;
 bool full_debug_messages = false;
 NDT ndt;
-bool show_reference_buckets_indoor = true;
-bool show_reference_buckets_outdoor = false;
+// per submap level: show its buckets / their normal vectors / their covariances
+std::array<bool, kMaxSubmaps> show_submap_buckets{ true };
+std::array<bool, kMaxSubmaps> show_submap_normals{};
+std::array<bool, kMaxSubmaps> show_submap_covs{};
 bool show_reference_points = false;
 int dec_reference_points = 100;
 bool show_initial_points = true;
@@ -104,8 +106,6 @@ bool show_trajectory = true;
 bool show_trajectory_as_axes = false;
 bool show_prediction_vectors = false;
 bool intermediate_trajectory_prediction_axes = false;
-bool show_covs_indoor = false;
-bool show_covs_outdoor = false;
 int dec_covs = 10;
 bool simple_gui = true;
 bool step_1_done = false;
@@ -113,8 +113,6 @@ bool step_2_done = false;
 bool step_3_done = false;
 bool calculations_failed = false;
 bool show_without_filtered_buckets = false;
-bool show_normal_vectors_indoor = false;
-bool show_normal_vectors_outdoor = false;
 bool intensity_shading = true;
 
 int lastPar = 1;
@@ -124,7 +122,7 @@ std::vector<WorkerData> worker_data;
 ScanRenderer trajectory_renderer;
 step1_render::TrajectoryCache trajectory_cache;
 step1_render::PointCache initial_point_cache, reference_point_cache;
-step1_render::BucketCache indoor_bucket_cache, outdoor_bucket_cache;
+std::array<step1_render::BucketCache, kMaxSubmaps> submap_bucket_caches;
 bool trajectory_points_dirty = true; // GUI-thread edits; worker changes are identified by the published snapshot
 
 // Only display fields are copied; raw IMU, timestamps and point-cache paths stay with the worker.
@@ -273,13 +271,8 @@ static void resources_gui()
 void set_lidar_odometry_default_params(LidarOdometryParams& params)
 {
     params.decimation = 0.01;
-    params.in_out_params_indoor.resolution_X = 0.1;
-    params.in_out_params_indoor.resolution_Y = 0.1;
-    params.in_out_params_indoor.resolution_Z = 0.1;
-
-    params.in_out_params_outdoor.resolution_X = 0.3;
-    params.in_out_params_outdoor.resolution_Y = 0.3;
-    params.in_out_params_outdoor.resolution_Z = 0.3;
+    params.number_of_submaps = kMinSubmaps;
+    params.submaps = default_submaps(); // level 0: 0.1 m, level 1: 0.3 m from 5 m
 
     params.filter_threshold_xy_inner = 0.3;
     params.filter_threshold_xy_outer = 70.0;
@@ -295,6 +288,93 @@ void set_lidar_odometry_default_params(LidarOdometryParams& params)
     params.nr_iter = 1000;
     params.sliding_window_trajectory_length_threshold = 200;
     params.real_time_threshold_seconds = 10;
+}
+
+const char* submap_level_name(int level)
+{
+    return level == 0 ? "fine" : level == 1 ? "coarse" : "extra";
+}
+
+Eigen::Vector3f submap_color(int level)
+{
+    // levels 0 and 1 keep the former indoor (red) and outdoor (blue) colours
+    static constexpr float colors[kMaxSubmaps][3] = { { 1.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 0.8f, 0.0f },
+                                                      { 1.0f, 0.5f, 0.0f }, { 0.6f, 0.0f, 1.0f }, { 0.0f, 0.7f, 0.7f },
+                                                      { 0.6f, 0.4f, 0.2f }, { 0.5f, 0.5f, 0.5f } };
+    return Eigen::Vector3f(colors[level][0], colors[level][1], colors[level][2]);
+}
+
+// number of submaps and, per level, its voxel size, the range from which points use it and its weight
+void submaps_gui(LidarOdometryParams& params)
+{
+    ImGui::Text("NDT submaps (voxel maps of the same points)");
+    ImGui::SetNextItemWidth(ImGuiNumberWidth);
+    ImGui::SliderInt("Number of submaps", &params.number_of_submaps, kMinSubmaps, kMaxSubmaps);
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::Text("Each point adds one term per submap it reaches:");
+        ImGui::Text("more submaps weigh the lidar more against the motion model.");
+        ImGui::Text("Lower the weights (e.g. 2/N each) to keep the total as with 2 submaps.");
+        ImGui::EndTooltip();
+    }
+    params.number_of_submaps = configured_submaps(params);
+    if (!params.ablation_study_use_hierarchical_rgd)
+        ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.0f, 1.0f), "Hierarchical RGD is off (Parameters > Ablation study): only submap 0 is used");
+
+    ImGui::TextDisabled("Voxel size X/Y/Z; From: sensor-frame range from which points use the submap");
+    constexpr float width = ImGuiNumberWidth * 0.6f;
+    if (ImGui::BeginTable("submaps", 6, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg))
+    {
+        ImGui::TableSetupColumn("#");
+        ImGui::TableSetupColumn("X [m]");
+        ImGui::TableSetupColumn("Y [m]");
+        ImGui::TableSetupColumn("Z [m]");
+        ImGui::TableSetupColumn("From [m]");
+        ImGui::TableSetupColumn("Weight");
+        ImGui::TableHeadersRow();
+
+        for (int level = 0; level < params.number_of_submaps; ++level)
+        {
+            SubmapParams& submap = params.submaps[level];
+            ImGui::PushID(level);
+            ImGui::TableNextRow();
+
+            ImGui::TableNextColumn();
+            const Eigen::Vector3f c = submap_color(level);
+            ImGui::TextColored(ImVec4(c.x(), c.y(), c.z(), 1.0f), "%d", level);
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Submap %d (%s); its buckets are drawn in this colour", level, submap_level_name(level));
+
+            const std::pair<double*, const char*> axes[3] = { { &submap.grid.resolution_X, xText },
+                                                              { &submap.grid.resolution_Y, yText },
+                                                              { &submap.grid.resolution_Z, zText } };
+            for (int axis = 0; axis < 3; ++axis)
+            {
+                ImGui::TableNextColumn();
+                ImGui::SetNextItemWidth(width);
+                ImGui::PushID(axis);
+                ImGui::InputDouble("##resolution", axes[axis].first, 0.0, 0.0, "%.3f");
+                ImGui::PopID();
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("%s", axes[axis].second);
+                *axes[axis].first = std::max(*axes[axis].first, 0.01);
+            }
+
+            ImGui::TableNextColumn();
+            ImGui::SetNextItemWidth(width);
+            ImGui::InputDouble("##min_range", &submap.min_range, 0.0, 0.0, "%.2f");
+            submap.min_range = std::max(submap.min_range, 0.0);
+
+            ImGui::TableNextColumn();
+            ImGui::SetNextItemWidth(width);
+            ImGui::InputDouble("##weight", &submap.weight, 0.0, 0.0, "%.3f");
+            submap.weight = std::max(submap.weight, 0.0);
+
+            ImGui::PopID();
+        }
+        ImGui::EndTable();
+    }
 }
 
 // Helper function to format time in human-readable format
@@ -450,7 +530,7 @@ void find_best_stretch(
                 // }
             }
         }
-        std::scoped_lock lock(params.mutex_buckets_indoor, params.mutex_buckets_outdoor);
+        std::scoped_lock lock(params.mutex_buckets);
 
         update_rgd(rgd_params, my_buckets, points_global2, trajectory_stretched[0].translation());
 
@@ -908,55 +988,7 @@ void settings_gui()
         if (!simple_gui)
         {
             ImGui::NewLine();
-            ImGui::Text("NDT bucket size (inner/outer)");
-            ImGui::PushItemWidth(ImGuiNumberWidth);
-            ImGui::InputDouble("##x", &params.in_out_params_indoor.resolution_X, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(xText);
-            if (params.in_out_params_indoor.resolution_X < 0.01)
-            {
-                params.in_out_params_indoor.resolution_X = 0.01;
-            }
-            ImGui::SameLine();
-            ImGui::InputDouble("X##ndt", &params.in_out_params_outdoor.resolution_X, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(xText);
-            if (params.in_out_params_outdoor.resolution_X < 0.01)
-            {
-                params.in_out_params_outdoor.resolution_X = 0.01;
-            }
-
-            ImGui::InputDouble("##y", &params.in_out_params_indoor.resolution_Y, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(yText);
-            if (params.in_out_params_indoor.resolution_Y < 0.01)
-            {
-                params.in_out_params_indoor.resolution_Y = 0.01;
-            }
-            ImGui::SameLine();
-            ImGui::InputDouble("Y##ndt", &params.in_out_params_outdoor.resolution_Y, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(yText);
-            if (params.in_out_params_outdoor.resolution_Y < 0.01)
-            {
-                params.in_out_params_outdoor.resolution_Y = 0.01;
-            }
-
-            ImGui::InputDouble("##z", &params.in_out_params_indoor.resolution_Z, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(zText);
-            if (params.in_out_params_indoor.resolution_Z < 0.01)
-            {
-                params.in_out_params_indoor.resolution_Z = 0.01;
-            }
-            ImGui::SameLine();
-            ImGui::InputDouble("Z##ndt", &params.in_out_params_outdoor.resolution_Z, 0.0, 0.0, "%.3f");
-            if (ImGui::IsItemHovered())
-                ImGui::SetTooltip(zText);
-            if (params.in_out_params_outdoor.resolution_Z < 0.01)
-            {
-                params.in_out_params_outdoor.resolution_Z = 0.01;
-            }
+            submaps_gui(params);
 
             ImGui::NewLine();
 
@@ -1355,13 +1387,7 @@ void settings_gui()
             if (ImGui::Button("Set parameters for drone with Ouster (https://ntu-aris.github.io/ntu_viral_dataset/)"))
             {
                 params.decimation = 1.0;
-                params.in_out_params_indoor.resolution_X = 1.0;
-                params.in_out_params_indoor.resolution_Y = 1.0;
-                params.in_out_params_indoor.resolution_Z = 1.0;
-
-                params.in_out_params_outdoor.resolution_X = 2.0;
-                params.in_out_params_outdoor.resolution_Y = 2.0;
-                params.in_out_params_outdoor.resolution_Z = 2.0;
+                set_two_level_submaps(params, 1.0, 2.0);
             }
 
             if (!input_file_names.empty())
@@ -1409,7 +1435,7 @@ void settings_gui()
                     {
                         for (int i = 0; i < 30; i++)
                         {
-                            align_to_reference(params.in_out_params_indoor, params.initial_points, params.m_g, params.buckets_indoor);
+                            align_to_reference(params.submaps[0].grid, params.initial_points, params.m_g, params.buckets[0]);
                         }
                     }
                 }
@@ -1844,8 +1870,11 @@ void progress_window()
     ImGui::SameLine();
     ImGui::Text("Also check console for progress..");
 
-    ImGui::Checkbox("Show reference buckets indoor", &show_reference_buckets_indoor);
-    ImGui::Checkbox("Show reference buckets outdoor", &show_reference_buckets_outdoor);
+    for (int level = 0; level < active_submaps(params); ++level)
+    {
+        const std::string label = "Show buckets of submap " + std::to_string(level) + " (" + submap_level_name(level) + ")";
+        ImGui::Checkbox(label.c_str(), &show_submap_buckets[level]);
+    }
     ImGui::Checkbox("Show initial points", &show_initial_points);
     ImGui::Checkbox("Intensity shading", &intensity_shading);
     ImGui::Checkbox("Show trajectory", &show_trajectory);
@@ -1853,10 +1882,11 @@ void progress_window()
     ImGui::Checkbox("Show prediction vectors", &show_prediction_vectors);
     ImGui::Checkbox("Show intermediate trajectory prediction axes", &intermediate_trajectory_prediction_axes);
     ImGui::Checkbox("Show without filtered buckets", &show_without_filtered_buckets);
-    ImGui::Checkbox("Show normal vectors indoor", &show_normal_vectors_indoor);
-    ImGui::Checkbox("Show normal vectors outdoor", &show_normal_vectors_outdoor);
-    // ImGui::Checkbox("Show covs indoor", &show_covs_indoor);
-    // ImGui::Checkbox("Show covs outdoor", &show_covs_outdoor);
+    for (int level = 0; level < active_submaps(params); ++level)
+    {
+        const std::string label = "Show normal vectors of submap " + std::to_string(level);
+        ImGui::Checkbox(label.c_str(), &show_submap_normals[level]);
+    }
 
     ImGui::End();
 }
@@ -2232,42 +2262,30 @@ void display()
         rlEnd();
     }
 
-    const unsigned indoor_flags =
-        (show_reference_buckets_indoor ? 1 : 0) | (show_normal_vectors_indoor ? 2 : 0) | (show_covs_indoor ? 4 : 0);
-    const unsigned outdoor_flags =
-        (show_reference_buckets_outdoor ? 1 : 0) | (show_normal_vectors_outdoor ? 2 : 0) | (show_covs_outdoor ? 4 : 0);
-    indoor_bucket_cache.prepare(
-        params.buckets_indoor,
-        params.mutex_buckets_indoor,
-        params.buckets_indoor_revision,
-        indoor_flags,
-        trajectory_running,
-        intensity_shading,
-        show_without_filtered_buckets,
-        Eigen::Vector3f(1, 0, 0),
-        Eigen::Vector3f(0, 1, 1));
-    outdoor_bucket_cache.prepare(
-        params.buckets_outdoor,
-        params.mutex_buckets_outdoor,
-        params.buckets_outdoor_revision,
-        outdoor_flags,
-        trajectory_running,
-        intensity_shading,
-        show_without_filtered_buckets,
-        Eigen::Vector3f(0, 0, 1),
-        Eigen::Vector3f(1, 0, 1));
-    if (show_reference_buckets_indoor)
-        drawPointVertices(indoor_bucket_cache.points, 1);
-    if (show_reference_buckets_outdoor)
-        drawPointVertices(outdoor_bucket_cache.points, 1);
-    if (show_normal_vectors_indoor && (indoor_bucket_cache.built & 2))
-        drawLineVertices(indoor_bucket_cache.normals);
-    if (show_normal_vectors_outdoor && (outdoor_bucket_cache.built & 2))
-        drawLineVertices(outdoor_bucket_cache.normals);
-    if (show_covs_indoor)
-        indoor_bucket_cache.drawCovariances(Eigen::Vector3f(1, 0, 0));
-    if (show_covs_outdoor)
-        outdoor_bucket_cache.drawCovariances(Eigen::Vector3f(0, 0, 1));
+    for (int level = 0; level < kMaxSubmaps; ++level)
+    {
+        // levels a run does not use stay empty; their checkboxes are hidden, so do not draw them either
+        const bool used = level < active_submaps(params);
+        const unsigned flags =
+            used ? (show_submap_buckets[level] ? 1 : 0) | (show_submap_normals[level] ? 2 : 0) | (show_submap_covs[level] ? 4 : 0) : 0;
+        step1_render::BucketCache& cache = submap_bucket_caches[level];
+        cache.prepare(
+            params.buckets[level],
+            params.mutex_buckets,
+            params.buckets_revision[level],
+            flags,
+            trajectory_running,
+            intensity_shading,
+            show_without_filtered_buckets,
+            submap_color(level),
+            Eigen::Vector3f::Ones() - submap_color(level));
+        if (flags & 1)
+            drawPointVertices(cache.points, 1);
+        if ((flags & 2) && (cache.built & 2))
+            drawLineVertices(cache.normals);
+        if (flags & 4)
+            cache.drawCovariances(submap_color(level));
+    }
 
     //
     if (display_workers.size() > 0)
@@ -2376,13 +2394,7 @@ void display()
                     lastPar = 2;
 
                     params.decimation = 0.01;
-                    params.in_out_params_indoor.resolution_X = 0.1;
-                    params.in_out_params_indoor.resolution_Y = 0.1;
-                    params.in_out_params_indoor.resolution_Z = 0.1;
-
-                    params.in_out_params_outdoor.resolution_X = 0.3;
-                    params.in_out_params_outdoor.resolution_Y = 0.3;
-                    params.in_out_params_outdoor.resolution_Z = 0.3;
+                    set_two_level_submaps(params, 0.1, 0.3);
 
                     params.filter_threshold_xy_inner = 1.0;
                     params.filter_threshold_xy_outer = 70.0;
@@ -2406,13 +2418,7 @@ void display()
                     lastPar = 3;
 
                     params.decimation = 0.03;
-                    params.in_out_params_indoor.resolution_X = 0.3;
-                    params.in_out_params_indoor.resolution_Y = 0.3;
-                    params.in_out_params_indoor.resolution_Z = 0.3;
-
-                    params.in_out_params_outdoor.resolution_X = 0.5;
-                    params.in_out_params_outdoor.resolution_Y = 0.5;
-                    params.in_out_params_outdoor.resolution_Z = 0.5;
+                    set_two_level_submaps(params, 0.3, 0.5);
 
                     params.filter_threshold_xy_inner = 1.0;
                     params.filter_threshold_xy_outer = 70.0;
@@ -2494,7 +2500,7 @@ void display()
                 {
                     ImGui::MenuItem("Use planarity", nullptr, &params.ablation_study_use_planarity);
                     ImGui::MenuItem("Use norm", nullptr, &params.ablation_study_use_norm);
-                    ImGui::MenuItem("Use hierarchical RGD (outer RGD turned on)", nullptr, &params.ablation_study_use_hierarchical_rgd);
+                    ImGui::MenuItem("Use hierarchical RGD (submaps 1+ turned on)", nullptr, &params.ablation_study_use_hierarchical_rgd);
                     ImGui::MenuItem("Use view point and normal vectors", nullptr, &params.ablation_study_use_view_point_and_normal_vectors);
                     ImGui::MenuItem("Use threshold '1e-6' outer RGD", nullptr, &params.ablation_study_use_threshold_outer_rgd);
                     ImGui::MenuItem("Use anisotropic weighting", nullptr, &params.ablation_study_use_anisotropic_weighting);
@@ -2918,8 +2924,8 @@ int main(int argc, char* argv[])
             trajectory_cache.clear(trajectory_renderer);
             unloadPointVertices(initial_point_cache.parts);
             unloadPointVertices(reference_point_cache.parts);
-            indoor_bucket_cache.clear();
-            outdoor_bucket_cache.clear();
+            for (step1_render::BucketCache& cache : submap_bucket_caches)
+                cache.clear();
             trajectory_renderer.shutdown();
             shutdownGL();
             on_exit();

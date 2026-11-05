@@ -26,6 +26,11 @@ lo_params.in_out_params_indoor.resolution_Z = 0.1
 lo_params.in_out_params_outdoor.resolution_X = 0.3
 lo_params.in_out_params_outdoor.resolution_Y = 0.3
 lo_params.in_out_params_outdoor.resolution_Z = 0.3
+# optional: more submap levels (2..8); in_out_params_indoor/outdoor are levels 0 and 1
+# lo_params.number_of_submaps = 3
+# lo_params.submap(2).grid.resolution_X = 0.5  # likewise _Y, _Z
+# lo_params.submap(2).min_range = 5.0          # sensor-frame range [m] from which points use the level
+# lo_params.submap(2).weight = 1.0
 lo_params.filter_threshold_xy_inner = 0.3
 lo_params.filter_threshold_xy_outer = 70.0
 lo_params.nr_iter = 100  

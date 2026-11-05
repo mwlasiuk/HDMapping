@@ -1291,52 +1291,33 @@ bool save_result(std::vector<WorkerData>& worker_data, LidarOdometryParams& para
 
 void filter_reference_buckets(LidarOdometryParams& params)
 {
-    std::scoped_lock lock(params.mutex_buckets_indoor, params.mutex_buckets_outdoor);
-    ++params.buckets_indoor_revision;
-    ++params.buckets_outdoor_revision;
-    NDTBucketMapType reference_buckets_out;
-    for (const auto& b : params.buckets_indoor)
+    std::scoped_lock lock(params.mutex_buckets);
+    // keep the planar buckets of each level with more than 10 points
+    for (int level = 0; level < configured_submaps(params); ++level)
     {
-        if (b.second.number_of_points > 10)
+        ++params.buckets_revision[level];
+        NDTBucketMapType reference_buckets_out;
+        for (const auto& b : params.buckets[level])
         {
-            Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eigen_solver(b.second.cov, Eigen::ComputeEigenvectors);
-
-            auto eigen_values = eigen_solver.eigenvalues();
-            double sum_ev = eigen_values.x() + eigen_values.y() + eigen_values.z();
-            double ev1 = eigen_values.x();
-            double ev2 = eigen_values.y();
-            double ev3 = eigen_values.z();
-
-            double planarity = 1 - ((3 * ev1 / sum_ev) * (3 * ev2 / sum_ev) * (3 * ev3 / sum_ev));
-            if (planarity > 0.7)
+            if (b.second.number_of_points > 10)
             {
-                reference_buckets_out[b.first] = b.second;
+                Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eigen_solver(b.second.cov, Eigen::ComputeEigenvectors);
+
+                auto eigen_values = eigen_solver.eigenvalues();
+                double sum_ev = eigen_values.x() + eigen_values.y() + eigen_values.z();
+                double ev1 = eigen_values.x();
+                double ev2 = eigen_values.y();
+                double ev3 = eigen_values.z();
+
+                double planarity = 1 - ((3 * ev1 / sum_ev) * (3 * ev2 / sum_ev) * (3 * ev3 / sum_ev));
+                if (planarity > 0.7)
+                {
+                    reference_buckets_out[b.first] = b.second;
+                }
             }
         }
+        params.buckets[level] = std::move(reference_buckets_out);
     }
-    params.buckets_indoor = reference_buckets_out;
-
-    NDTBucketMapType reference_buckets_out2;
-    for (const auto& b : params.buckets_indoor)
-    {
-        if (b.second.number_of_points > 10)
-        {
-            Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eigen_solver(b.second.cov, Eigen::ComputeEigenvectors);
-
-            auto eigen_values = eigen_solver.eigenvalues();
-            double sum_ev = eigen_values.x() + eigen_values.y() + eigen_values.z();
-            double ev1 = eigen_values.x();
-            double ev2 = eigen_values.y();
-            double ev3 = eigen_values.z();
-
-            double planarity = 1 - ((3 * ev1 / sum_ev) * (3 * ev2 / sum_ev) * (3 * ev3 / sum_ev));
-            if (planarity > 0.7)
-            {
-                reference_buckets_out2[b.first] = b.second;
-            }
-        }
-    }
-    params.buckets_outdoor = reference_buckets_out2;
 }
 
 void save_trajectory_to_ascii(std::vector<WorkerData>& worker_data, std::string output_file_name)
@@ -1355,13 +1336,13 @@ void save_trajectory_to_ascii(std::vector<WorkerData>& worker_data, std::string 
 
 void load_reference_point_clouds(const std::vector<std::string>& input_file_names, LidarOdometryParams& params)
 {
-    std::scoped_lock lock(params.mutex_buckets_indoor, params.mutex_buckets_outdoor);
-    ++params.buckets_indoor_revision;
-    ++params.buckets_outdoor_revision;
+    std::scoped_lock lock(params.mutex_buckets);
+    for (int level = 0; level < kMaxSubmaps; ++level)
+    {
+        ++params.buckets_revision[level];
+        params.buckets[level].clear();
+    }
     ++params.reference_points_revision;
-    // params.reference_buckets.clear();
-    params.buckets_indoor.clear();
-    params.buckets_outdoor.clear();
 
     params.reference_points.clear();
 
@@ -1373,9 +1354,8 @@ void load_reference_point_clouds(const std::vector<std::string>& input_file_name
         params.reference_points.insert(std::end(params.reference_points), std::begin(pp), std::end(pp));
     }
 
-    update_rgd(params.in_out_params_indoor, params.buckets_indoor, params.reference_points);
-    update_rgd(params.in_out_params_outdoor, params.buckets_outdoor, params.reference_points);
-    // params.buckets_indoor = params.reference_buckets;
+    for (int level = 0; level < configured_submaps(params); ++level)
+        update_rgd(params.submaps[level].grid, params.buckets[level], params.reference_points);
 }
 
 std::string save_results_automatic(
@@ -1545,27 +1525,33 @@ bool save_processing_results_json(const LidarOdometryParams& params, const fs::p
 
         // Complex data structures that can't be easily loaded back as parameters
         // NDT grid parameters (read-only results)
-        results["ndt_grid_indoor"]["bounding_box_min_X"] = params.in_out_params_indoor.bounding_box_min_X;
-        results["ndt_grid_indoor"]["bounding_box_min_Y"] = params.in_out_params_indoor.bounding_box_min_Y;
-        results["ndt_grid_indoor"]["bounding_box_min_Z"] = params.in_out_params_indoor.bounding_box_min_Z;
-        results["ndt_grid_indoor"]["bounding_box_max_X"] = params.in_out_params_indoor.bounding_box_max_X;
-        results["ndt_grid_indoor"]["bounding_box_max_Y"] = params.in_out_params_indoor.bounding_box_max_Y;
-        results["ndt_grid_indoor"]["bounding_box_max_Z"] = params.in_out_params_indoor.bounding_box_max_Z;
-        results["ndt_grid_indoor"]["resolution_X"] = params.in_out_params_indoor.resolution_X;
-        results["ndt_grid_indoor"]["resolution_Y"] = params.in_out_params_indoor.resolution_Y;
-        results["ndt_grid_indoor"]["resolution_Z"] = params.in_out_params_indoor.resolution_Z;
-        results["ndt_grid_indoor"]["number_of_buckets"] = static_cast<int64_t>(params.in_out_params_indoor.number_of_buckets);
-
-        results["ndt_grid_outdoor"]["bounding_box_min_X"] = params.in_out_params_outdoor.bounding_box_min_X;
-        results["ndt_grid_outdoor"]["bounding_box_min_Y"] = params.in_out_params_outdoor.bounding_box_min_Y;
-        results["ndt_grid_outdoor"]["bounding_box_min_Z"] = params.in_out_params_outdoor.bounding_box_min_Z;
-        results["ndt_grid_outdoor"]["bounding_box_max_X"] = params.in_out_params_outdoor.bounding_box_max_X;
-        results["ndt_grid_outdoor"]["bounding_box_max_Y"] = params.in_out_params_outdoor.bounding_box_max_Y;
-        results["ndt_grid_outdoor"]["bounding_box_max_Z"] = params.in_out_params_outdoor.bounding_box_max_Z;
-        results["ndt_grid_outdoor"]["resolution_X"] = params.in_out_params_outdoor.resolution_X;
-        results["ndt_grid_outdoor"]["resolution_Y"] = params.in_out_params_outdoor.resolution_Y;
-        results["ndt_grid_outdoor"]["resolution_Z"] = params.in_out_params_outdoor.resolution_Z;
-        results["ndt_grid_outdoor"]["number_of_buckets"] = static_cast<int64_t>(params.in_out_params_outdoor.number_of_buckets);
+        const auto grid_json = [](const NDT::GridParameters& grid)
+        {
+            nlohmann::json g;
+            g["bounding_box_min_X"] = grid.bounding_box_min_X;
+            g["bounding_box_min_Y"] = grid.bounding_box_min_Y;
+            g["bounding_box_min_Z"] = grid.bounding_box_min_Z;
+            g["bounding_box_max_X"] = grid.bounding_box_max_X;
+            g["bounding_box_max_Y"] = grid.bounding_box_max_Y;
+            g["bounding_box_max_Z"] = grid.bounding_box_max_Z;
+            g["resolution_X"] = grid.resolution_X;
+            g["resolution_Y"] = grid.resolution_Y;
+            g["resolution_Z"] = grid.resolution_Z;
+            g["number_of_buckets"] = static_cast<int64_t>(grid.number_of_buckets);
+            return g;
+        };
+        // levels 0 and 1 under their former names
+        results["ndt_grid_indoor"] = grid_json(params.submaps[0].grid);
+        results["ndt_grid_outdoor"] = grid_json(params.submaps[1].grid);
+        results["submaps"]["number_of_submaps"] = params.number_of_submaps;
+        results["submaps"]["levels_used"] = active_submaps(params);
+        for (int level = 0; level < configured_submaps(params); ++level)
+        {
+            nlohmann::json l = grid_json(params.submaps[level].grid);
+            l["min_range"] = params.submaps[level].min_range;
+            l["weight"] = params.submaps[level].weight;
+            results["submaps"]["levels"].push_back(l);
+        }
 
         // Motion model correction (complex structure)
         results["motion_model_correction"]["om"] = params.motion_model_correction.om;

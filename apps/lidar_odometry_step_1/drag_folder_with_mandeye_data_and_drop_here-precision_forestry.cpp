@@ -195,13 +195,13 @@ fs::path outwd;
 void set_lidar_odometry_default_params(LidarOdometryParams& params)
 {
     params.decimation = 0.01;
-    params.in_out_params_indoor.resolution_X = 0.1;
-    params.in_out_params_indoor.resolution_Y = 0.1;
-    params.in_out_params_indoor.resolution_Z = 0.1;
+    params.submaps[0].grid.resolution_X = 0.1;
+    params.submaps[0].grid.resolution_Y = 0.1;
+    params.submaps[0].grid.resolution_Z = 0.1;
 
-    params.in_out_params_outdoor.resolution_X = 0.3;
-    params.in_out_params_outdoor.resolution_Y = 0.3;
-    params.in_out_params_outdoor.resolution_Z = 0.3;
+    params.submaps[1].grid.resolution_X = 0.3;
+    params.submaps[1].grid.resolution_Y = 0.3;
+    params.submaps[1].grid.resolution_Z = 0.3;
 
     params.filter_threshold_xy_inner = 0.3;
     params.filter_threshold_xy_outer = 70.0;
@@ -344,7 +344,7 @@ void find_best_stretch(
                 // }
             }
         }
-        std::scoped_lock lock(params.mutex_buckets_indoor, params.mutex_buckets_outdoor);
+        std::scoped_lock lock(params.mutex_buckets);
 
         update_rgd(rgd_params, my_buckets, points_global2, trajectory_stretched[0].translation());
 
@@ -641,52 +641,52 @@ void settings_gui()
             ImGui::NewLine();
             ImGui::Text("NDT bucket size (inner/outer)");
             ImGui::PushItemWidth(ImGuiNumberWidth);
-            ImGui::InputDouble("##x", &params.in_out_params_indoor.resolution_X, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("##x", &params.submaps[0].grid.resolution_X, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(xText);
-            if (params.in_out_params_indoor.resolution_X < 0.01)
+            if (params.submaps[0].grid.resolution_X < 0.01)
             {
-                params.in_out_params_indoor.resolution_X = 0.01;
+                params.submaps[0].grid.resolution_X = 0.01;
             }
             ImGui::SameLine();
-            ImGui::InputDouble("X##ndt", &params.in_out_params_outdoor.resolution_X, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("X##ndt", &params.submaps[1].grid.resolution_X, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(xText);
-            if (params.in_out_params_outdoor.resolution_X < 0.01)
+            if (params.submaps[1].grid.resolution_X < 0.01)
             {
-                params.in_out_params_outdoor.resolution_X = 0.01;
+                params.submaps[1].grid.resolution_X = 0.01;
             }
 
-            ImGui::InputDouble("##y", &params.in_out_params_indoor.resolution_Y, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("##y", &params.submaps[0].grid.resolution_Y, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(yText);
-            if (params.in_out_params_indoor.resolution_Y < 0.01)
+            if (params.submaps[0].grid.resolution_Y < 0.01)
             {
-                params.in_out_params_indoor.resolution_Y = 0.01;
+                params.submaps[0].grid.resolution_Y = 0.01;
             }
             ImGui::SameLine();
-            ImGui::InputDouble("Y##ndt", &params.in_out_params_outdoor.resolution_Y, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("Y##ndt", &params.submaps[1].grid.resolution_Y, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(yText);
-            if (params.in_out_params_outdoor.resolution_Y < 0.01)
+            if (params.submaps[1].grid.resolution_Y < 0.01)
             {
-                params.in_out_params_outdoor.resolution_Y = 0.01;
+                params.submaps[1].grid.resolution_Y = 0.01;
             }
 
-            ImGui::InputDouble("##z", &params.in_out_params_indoor.resolution_Z, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("##z", &params.submaps[0].grid.resolution_Z, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(zText);
-            if (params.in_out_params_indoor.resolution_Z < 0.01)
+            if (params.submaps[0].grid.resolution_Z < 0.01)
             {
-                params.in_out_params_indoor.resolution_Z = 0.01;
+                params.submaps[0].grid.resolution_Z = 0.01;
             }
             ImGui::SameLine();
-            ImGui::InputDouble("Z##ndt", &params.in_out_params_outdoor.resolution_Z, 0.0, 0.0, "%.3f");
+            ImGui::InputDouble("Z##ndt", &params.submaps[1].grid.resolution_Z, 0.0, 0.0, "%.3f");
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip(zText);
-            if (params.in_out_params_outdoor.resolution_Z < 0.01)
+            if (params.submaps[1].grid.resolution_Z < 0.01)
             {
-                params.in_out_params_outdoor.resolution_Z = 0.01;
+                params.submaps[1].grid.resolution_Z = 0.01;
             }
 
             ImGui::NewLine();
@@ -1120,7 +1120,7 @@ void settings_gui()
                     {
                         for (int i = 0; i < 30; i++)
                         {
-                            align_to_reference(params.in_out_params_indoor, params.initial_points, params.m_g, params.buckets_indoor);
+                            align_to_reference(params.submaps[0].grid, params.initial_points, params.m_g, params.buckets[0]);
                         }
                     }
                 }
@@ -1669,7 +1669,7 @@ void display()
 
     if (show_covs)
     {
-        for (const auto& b : params.buckets_indoor)
+        for (const auto& b : params.buckets[0])
             draw_ellipse(b.second.cov, b.second.mean, Eigen::Vector3f(0.0f, 0.0f, 1.0f), 3);
     }
 
@@ -1777,12 +1777,12 @@ void display()
     {
         glColor3f(1, 0, 0);
         glBegin(GL_POINTS);
-        for (const auto& b : params.buckets_indoor)
+        for (const auto& b : params.buckets[0])
             glVertex3f(b.second.mean.x(), b.second.mean.y(), b.second.mean.z());
         glEnd();
 
         glBegin(GL_POINTS);
-        for (const auto& b : params.buckets_outdoor)
+        for (const auto& b : params.buckets[1])
             glVertex3f(b.second.mean.x(), b.second.mean.y(), b.second.mean.z());
         glEnd();
     }
@@ -1865,13 +1865,13 @@ void display()
                     lastPar = 3;
 
                     params.decimation = 0.03;
-                    params.in_out_params_indoor.resolution_X = 0.3;
-                    params.in_out_params_indoor.resolution_Y = 0.3;
-                    params.in_out_params_indoor.resolution_Z = 0.3;
+                    params.submaps[0].grid.resolution_X = 0.3;
+                    params.submaps[0].grid.resolution_Y = 0.3;
+                    params.submaps[0].grid.resolution_Z = 0.3;
 
-                    params.in_out_params_outdoor.resolution_X = 0.5;
-                    params.in_out_params_outdoor.resolution_Y = 0.5;
-                    params.in_out_params_outdoor.resolution_Z = 0.5;
+                    params.submaps[1].grid.resolution_X = 0.5;
+                    params.submaps[1].grid.resolution_Y = 0.5;
+                    params.submaps[1].grid.resolution_Z = 0.5;
 
                     params.filter_threshold_xy_inner = 1.0;
                     params.filter_threshold_xy_outer = 70.0;
@@ -1895,13 +1895,13 @@ void display()
                     lastPar = 4;
 
                     params.decimation = 0.01;
-                    params.in_out_params_indoor.resolution_X = 0.1;
-                    params.in_out_params_indoor.resolution_Y = 0.1;
-                    params.in_out_params_indoor.resolution_Z = 0.1;
+                    params.submaps[0].grid.resolution_X = 0.1;
+                    params.submaps[0].grid.resolution_Y = 0.1;
+                    params.submaps[0].grid.resolution_Z = 0.1;
 
-                    params.in_out_params_outdoor.resolution_X = 0.3;
-                    params.in_out_params_outdoor.resolution_Y = 0.3;
-                    params.in_out_params_outdoor.resolution_Z = 0.3;
+                    params.submaps[1].grid.resolution_X = 0.3;
+                    params.submaps[1].grid.resolution_Y = 0.3;
+                    params.submaps[1].grid.resolution_Z = 0.3;
 
                     params.filter_threshold_xy_inner = 1.0;
                     params.filter_threshold_xy_outer = 70.0;
@@ -1982,7 +1982,7 @@ void display()
                 {
                     ImGui::MenuItem("Use planarity", nullptr, &params.ablation_study_use_planarity);
                     ImGui::MenuItem("Use norm", nullptr, &params.ablation_study_use_norm);
-                    ImGui::MenuItem("Use hierarchical RGD (outer RGD turned on)", nullptr, &params.ablation_study_use_hierarchical_rgd);
+                    ImGui::MenuItem("Use hierarchical RGD (submaps 1+ turned on)", nullptr, &params.ablation_study_use_hierarchical_rgd);
                     ImGui::MenuItem("Use view point and normal vectors", nullptr, &params.ablation_study_use_view_point_and_normal_vectors);
                     ImGui::MenuItem("Use threshold '1e-6' outer RGD ", nullptr, &params.ablation_study_use_threshold_outer_rgd);
 
@@ -2300,13 +2300,13 @@ int main(int argc, char* argv[])
             lastPar = 4;
 
             params.decimation = 0.01;
-            params.in_out_params_indoor.resolution_X = 0.1;
-            params.in_out_params_indoor.resolution_Y = 0.1;
-            params.in_out_params_indoor.resolution_Z = 0.1;
+            params.submaps[0].grid.resolution_X = 0.1;
+            params.submaps[0].grid.resolution_Y = 0.1;
+            params.submaps[0].grid.resolution_Z = 0.1;
 
-            params.in_out_params_outdoor.resolution_X = 0.3;
-            params.in_out_params_outdoor.resolution_Y = 0.3;
-            params.in_out_params_outdoor.resolution_Z = 0.3;
+            params.submaps[1].grid.resolution_X = 0.3;
+            params.submaps[1].grid.resolution_Y = 0.3;
+            params.submaps[1].grid.resolution_Z = 0.3;
 
             params.filter_threshold_xy_inner = 1.0;
             params.filter_threshold_xy_outer = 70.0;

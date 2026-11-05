@@ -4,7 +4,7 @@ project(lidar_odometry_step_1_tests)
 
 # Unit tests for lidar_odometry_utils.h/.cpp: the MLvxCalib namespace, which
 # parses Livox extrinsic/IMU calibration files (.json/.mjc and .sn), and
-# find_lidar_gaps(). Compiles
+# find_lidar_gaps(), and the [submaps] section of the parameter file (toml_io.cpp). Compiles
 # the real lidar_odometry_utils.cpp (no GUI code path, WITH_GUI left
 # undefined) instead of the whole lidar_odometry_step_1 app, so the include
 # dirs/link libraries below are the subset that TU actually needs: laszip and
@@ -16,7 +16,9 @@ project(lidar_odometry_step_1_tests)
 add_executable(lidar_odometry_step_1_tests
     test_mlvx_calib.cpp
     test_lidar_gaps.cpp
+    test_submaps_toml.cpp
     ../lidar_odometry_utils.cpp
+    ../toml_io.cpp
 )
 
 target_include_directories(lidar_odometry_step_1_tests PRIVATE
@@ -29,6 +31,7 @@ target_include_directories(lidar_odometry_step_1_tests PRIVATE
     ${THIRDPARTY_DIRECTORY}/observation_equations/codes
     ${THIRDPARTY_DIRECTORY}/vqf/vqf/cpp
     ${THIRDPARTY_DIRECTORY}/Fusion/Fusion
+    ${THIRDPARTY_DIRECTORY}/tomlplusplus/include
 )
 
 target_link_libraries(lidar_odometry_step_1_tests PRIVATE

@@ -1,4 +1,5 @@
 #include "toml_io.h"
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
@@ -65,8 +66,24 @@ bool TomlIO::SaveParametersToTomlFile(const std::string& filepath, const LidarOd
         nested_tbl.insert("resolution_Z", grid.resolution_Z);
         tbl.insert(name, std::move(nested_tbl));
     };
-    insert_grid_params("in_out_params_indoor", params.in_out_params_indoor);
-    insert_grid_params("in_out_params_outdoor", params.in_out_params_outdoor);
+    // levels 0 and 1 also under their former names, for builds without [submaps]
+    insert_grid_params("in_out_params_indoor", params.submaps[0].grid);
+    insert_grid_params("in_out_params_outdoor", params.submaps[1].grid);
+
+    // every level is saved, so a file can switch number_of_submaps without listing levels again
+    toml::table submaps_tbl;
+    toml::array resolutions, min_ranges, weights;
+    for (const SubmapParams& submap : params.submaps)
+    {
+        resolutions.push_back(toml::array{ submap.grid.resolution_X, submap.grid.resolution_Y, submap.grid.resolution_Z });
+        min_ranges.push_back(submap.min_range);
+        weights.push_back(submap.weight);
+    }
+    submaps_tbl.insert("number_of_submaps", params.number_of_submaps);
+    submaps_tbl.insert("resolutions", std::move(resolutions));
+    submaps_tbl.insert("min_ranges", std::move(min_ranges));
+    submaps_tbl.insert("weights", std::move(weights));
+    tbl.insert("submaps", std::move(submaps_tbl));
 
     std::ofstream out(filepath);
 
@@ -142,6 +159,54 @@ void TomlIO::read_grid_params(NDT::GridParameters& grid, const toml::table* grid
     set_if_exists(grid, grid_tbl, "resolution_X", &NDT::GridParameters::resolution_X);
     set_if_exists(grid, grid_tbl, "resolution_Y", &NDT::GridParameters::resolution_Y);
     set_if_exists(grid, grid_tbl, "resolution_Z", &NDT::GridParameters::resolution_Z);
+}
+
+void TomlIO::read_submaps(LidarOdometryParams& params, const toml::table* submaps_tbl)
+{
+    if (!submaps_tbl)
+        return;
+
+    if (auto n = (*submaps_tbl)["number_of_submaps"].value<int64_t>(); n.has_value())
+    {
+        params.number_of_submaps = static_cast<int>(std::clamp<int64_t>(*n, kMinSubmaps, kMaxSubmaps));
+        if (params.number_of_submaps != *n)
+            std::cout << "WARNING: number_of_submaps " << *n << " out of range, using " << params.number_of_submaps << std::endl;
+    }
+
+    // per-level arrays: entries past the end, or of the wrong type, leave that level as it was
+    if (const toml::array* resolutions = (*submaps_tbl)["resolutions"].as_array())
+    {
+        for (size_t level = 0; level < std::min<size_t>(resolutions->size(), kMaxSubmaps); ++level)
+        {
+            const toml::array* xyz = resolutions->get(level)->as_array();
+            if (!xyz || xyz->size() != 3)
+                continue;
+            const auto x = xyz->get(0)->value<double>();
+            const auto y = xyz->get(1)->value<double>();
+            const auto z = xyz->get(2)->value<double>();
+            if (!x || !y || !z || *x <= 0.0 || *y <= 0.0 || *z <= 0.0)
+            {
+                std::cout << "WARNING: submap level " << level << ": resolution must be three positive numbers, ignored" << std::endl;
+                continue;
+            }
+            params.submaps[level].grid.resolution_X = *x;
+            params.submaps[level].grid.resolution_Y = *y;
+            params.submaps[level].grid.resolution_Z = *z;
+        }
+    }
+    const auto read_per_level = [&](const char* key, double SubmapParams::* member)
+    {
+        if (const toml::array* values = (*submaps_tbl)[key].as_array())
+        {
+            for (size_t level = 0; level < std::min<size_t>(values->size(), kMaxSubmaps); ++level)
+            {
+                if (auto v = values->get(level)->value<double>(); v.has_value())
+                    params.submaps[level].*member = *v;
+            }
+        }
+    };
+    read_per_level("min_ranges", &SubmapParams::min_range);
+    read_per_level("weights", &SubmapParams::weight);
 }
 
 bool TomlIO::LoadParametersFromTomlFile(const std::string& filepath, LidarOdometryParams& params)
@@ -225,8 +290,10 @@ bool TomlIO::LoadParametersFromTomlFile(const std::string& filepath, LidarOdomet
         }
 #endif
     }
-    read_grid_params(params.in_out_params_indoor, tbl["in_out_params_indoor"].as_table());
-    read_grid_params(params.in_out_params_outdoor, tbl["in_out_params_outdoor"].as_table());
+    // a file without [submaps] (written before it existed) sets levels 0 and 1 from its indoor/outdoor grids
+    read_grid_params(params.submaps[0].grid, tbl["in_out_params_indoor"].as_table());
+    read_grid_params(params.submaps[1].grid, tbl["in_out_params_outdoor"].as_table());
+    read_submaps(params, tbl["submaps"].as_table());
 
     // Check and handle version information
     auto version_info = CheckConfigVersion(filepath);

@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <filesystem>
 #include <regex>
+#include <tbb/parallel_for.h>
 #include <tbb/parallel_for_each.h>
-#include <tbb/parallel_invoke.h>
 
 #include <Core/hash_utils.h>
 
@@ -239,45 +239,35 @@ void update_rgd_ray(
     }
 }
 
-void update_rgd_hierarchy(
-    const NDT::GridParameters& rgd_params_indoor,
-    NDTBucketMapType& buckets_indoor,
+void update_rgd_submaps(
+    const std::array<SubmapParams, kMaxSubmaps>& submaps,
+    std::array<NDTBucketMapType, kMaxSubmaps>& buckets,
+    int count,
     const std::vector<Point3Di>& points_global,
     const Eigen::Vector3d& viewport,
-    const NDT::GridParameters& rgd_params_outdoor,
-    NDTBucketMapType& buckets_outdoor,
     LookupStats& stats)
 {
-    update_rgd_hierarchy_ray(
-        rgd_params_indoor,
-        buckets_indoor,
-        points_global,
-        viewport,
-        rgd_params_outdoor,
-        buckets_outdoor,
-        stats,
-        points_global.size() < 100000);
+    update_rgd_submaps_ray(submaps, buckets, count, points_global, viewport, stats, points_global.size() < 100000);
 }
 
-void update_rgd_hierarchy_ray(
-    const NDT::GridParameters& rgd_params_indoor,
-    NDTBucketMapType& buckets_indoor,
+void update_rgd_submaps_ray(
+    const std::array<SubmapParams, kMaxSubmaps>& submaps,
+    std::array<NDTBucketMapType, kMaxSubmaps>& buckets,
+    int count,
     const std::vector<Point3Di>& points_global,
     const Eigen::Vector3d& viewport,
-    const NDT::GridParameters& rgd_params_outdoor,
-    NDTBucketMapType& buckets_outdoor,
     LookupStats& stats,
     bool ray_cast)
 {
-    tbb::parallel_invoke(
-        [&]()
-        {
-            update_rgd_ray(rgd_params_indoor, buckets_indoor, points_global, viewport, &stats.indoor_lookups, ray_cast);
-        },
-        [&]()
-        {
-            update_rgd_ray(rgd_params_outdoor, buckets_outdoor, points_global, viewport, &stats.outdoor_lookups, ray_cast);
-        });
+    count = std::clamp(count, 0, kMaxSubmaps);
+    const auto update_level = [&](int level)
+    {
+        update_rgd_ray(submaps[level].grid, buckets[level], points_global, viewport, &stats.lookups[level], ray_cast);
+    };
+    if (count == 1)
+        update_level(0);
+    else if (count > 1)
+        tbb::parallel_for(0, count, update_level);
 }
 
 void update_rgd_spherical_coordinates(

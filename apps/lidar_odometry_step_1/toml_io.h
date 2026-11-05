@@ -231,5 +231,6 @@ public:
     template<typename T>
     void set_if_exists(NDT::GridParameters& grid, const toml::table* tbl, const std::string& key, T NDT::GridParameters::* member);
     void read_grid_params(NDT::GridParameters& grid, const toml::table* grid_tbl);
+    void read_submaps(LidarOdometryParams& params, const toml::table* submaps_tbl);
     bool LoadParametersFromTomlFile(const std::string& filepath, LidarOdometryParams& params);
 };
